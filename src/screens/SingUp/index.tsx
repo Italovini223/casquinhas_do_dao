@@ -1,3 +1,4 @@
+import { Button } from '../../components/Button';
 import { Input } from '../../components/Input';
 import { Container, Content, Header } from './styles';
 
@@ -21,6 +22,10 @@ export function SingUp() {
         <Input 
           label='Confirme a senha'
           password
+        />
+
+        <Button 
+          title='Cadastrar-se'
         />
       </Content>
     </Container>
