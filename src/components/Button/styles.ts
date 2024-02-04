@@ -5,6 +5,8 @@ export const Container = styled.TouchableOpacity`
   min-height: 56px;
   max-height: 56px;
 
+  padding: 10px;
+
   border-radius: 6px;
 
   align-items: center;
