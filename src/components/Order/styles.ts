@@ -42,6 +42,6 @@ export const OrderTitle = styled.Text`
 export const OrderStatus = styled.View<orderStatusColorProps>`
   width: 10px;
   height: 10px;
-  border-radius: 50%;
+  border-radius: 10px;
   background-color: ${({ theme, status }) => status === 'Finished' ? theme.COLORS.BRAND_LIGHT : theme.COLORS.WHITE};
 `;
