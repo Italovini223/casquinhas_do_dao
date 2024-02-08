@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "casquinhas_do_dao",
-    "slug": "casquinhas_do_dao",
+    "name": "casquinhas-do-dao",
+    "slug": "casquinhas-do-dao",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
