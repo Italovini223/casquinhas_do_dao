@@ -5,7 +5,7 @@ import { Roboto_400Regular, Roboto_700Bold, useFonts } from '@expo-google-fonts/
 import { ThemeProvider } from 'styled-components'
 import {  SafeAreaProvider } from 'react-native-safe-area-context';
 
-import { Home } from "./src/screens/Home";
+import { Register } from "./src/screens/Register";
 
 import theme from './src/theme'
 
@@ -27,7 +27,7 @@ export default function App() {
           backgroundColor='transparent'
           translucent
         />
-        <Home />
+        <Register />
       </ThemeProvider>
     </SafeAreaProvider>
   );
