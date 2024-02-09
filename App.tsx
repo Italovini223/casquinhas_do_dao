@@ -2,14 +2,19 @@ import { StatusBar } from 'react-native';
 
 import { Roboto_400Regular, Roboto_700Bold, useFonts } from '@expo-google-fonts/roboto'
 
-import { ThemeProvider } from 'styled-components'
-import {  SafeAreaProvider } from 'react-native-safe-area-context';
+import { AppProvider, UserProvider } from '@realm/react';
 
-import { Home } from "./src/screens/Home";
+import { ThemeProvider } from 'styled-components'
+import {  SafeAreaProvider } from 'react-native-safe-area-context'
+
+import { Register } from "./src/screens/Register"
+import { Home } from './src/screens/Home'
+
+import { REALM_APP_ID } from '@env'
 
 import theme from './src/theme'
 
-import { Loading } from './src/components/Loading';
+import { Loading } from './src/components/Loading'
 
 export default function App() {
   const [fontsLoaded] = useFonts({ Roboto_400Regular, Roboto_700Bold })
@@ -20,16 +25,20 @@ export default function App() {
     )
   }
   return (
-    <SafeAreaProvider>
-      <ThemeProvider theme={theme}>
-        <StatusBar  
-          barStyle='light-content'
-          backgroundColor='transparent'
-          translucent
-        />
-        <Home />
-      </ThemeProvider>
-    </SafeAreaProvider>
+    <AppProvider id={REALM_APP_ID}>
+      <SafeAreaProvider>
+        <ThemeProvider theme={theme}>
+          <StatusBar  
+            barStyle='light-content'
+            backgroundColor='transparent'
+            translucent
+          />
+          <UserProvider fallback={Register}>
+            <Home />
+          </UserProvider>
+        </ThemeProvider>
+      </SafeAreaProvider>
+    </AppProvider>
   );
 }
 

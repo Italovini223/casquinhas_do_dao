@@ -1,7 +1,8 @@
 {
   "expo": {
-    "name": "casquinhas_do_dao",
-    "slug": "casquinhas_do_dao",
+    "name": "casquinhas-do-dao",
+    "slug": "casquinhas-do-dao",
+    "scheme": "casquinhas-do-dao",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -21,7 +22,8 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#202024"
-      }
+      },
+      "package": "com.italoviniciusbessa.casquinhasdodao"
     },
     "web": {
       "favicon": "./assets/favicon.png"
