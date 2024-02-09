@@ -49,7 +49,6 @@ export function Register() {
         })
       }
     } else {
-      Alert.alert('Entrar', 'Nao foi possível conectar-se a sua conta Google');
       setIsLoading(false);
     }
 
