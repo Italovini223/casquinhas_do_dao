@@ -2,18 +2,18 @@ import { TouchableOpacity } from 'react-native'
 
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
-import { Plus } from 'phosphor-react-native'
+import { useUser } from '@realm/react'
 
 import { useTheme } from 'styled-components/native'
 
-import { Container, Title } from './styles'
+import { Container, Picture, Title } from './styles'
 
 type Props = {
   title: string;
 }
 
 export function Header({ title }: Props) {
-  const { COLORS } = useTheme();
+  const user = useUser();
   const insets = useSafeAreaInsets();
 
   const paddingTop = insets.top + 20;
@@ -21,9 +21,10 @@ export function Header({ title }: Props) {
   return (
     <Container style={{ paddingTop }}>
 
-      <TouchableOpacity activeOpacity={0.7}>
-        <Plus size={24} color={COLORS.GRAY_200}/>
-      </TouchableOpacity>
+      <Picture 
+        source={{ uri: user.profile.pictureUrl}}
+        placeholder="L184i9offQof00ayfQay~qj[fQj["
+      />
       
       <Title>
         { title }
