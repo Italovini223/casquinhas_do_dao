@@ -11,7 +11,7 @@ import { Realm, useApp } from '@realm/react'
 
 import { useTheme } from 'styled-components/native'
 
-import { Container } from './styles'
+import { Container, Content } from './styles'
 import { Button } from '../../components/Button'
 import { Alert } from 'react-native'
 
@@ -57,16 +57,18 @@ export function Register() {
 
   return (
     <Container>
-      <IceCream 
-        color={COLORS.GRAY_200}
-        size={32}
-      />
+      <Content>
+        <IceCream 
+          color={COLORS.BRAND_LIGHT}
+          size={64}
+        />
 
-      <Button 
-        title='Entrar com Google'
-        onPress={handleGoogleSingIn}
-        isLoading={isLoading}
-      />
+        <Button 
+          title='Entrar com Google'
+          onPress={handleGoogleSingIn}
+          isLoading={isLoading}
+        />
+      </Content>
     </Container>
   );
 }

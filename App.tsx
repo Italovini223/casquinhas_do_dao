@@ -1,3 +1,5 @@
+import 'react-native-get-random-values'
+
 import { StatusBar } from 'react-native';
 
 import { Roboto_400Regular, Roboto_700Bold, useFonts } from '@expo-google-fonts/roboto'
