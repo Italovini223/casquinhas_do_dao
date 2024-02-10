@@ -2,17 +2,25 @@ import { createBottomTabNavigator, BottomTabNavigationProp } from "@react-naviga
 
 import { Platform } from "react-native"
 
-import { House, IceCream } from "phosphor-react-native"
+import { useApp } from "@realm/react"
+
+import { House, IceCream, SignOut, Money } from "phosphor-react-native"
 
 import { useTheme } from "styled-components/native"
 
+import { Loading } from "../components/Loading"
+
 import { New } from "../screens/New"
 import { Home } from "../screens/Home"
+import { useEffect } from "react"
+import { ToPay } from "../screens/ToPay"
 
 
 type AppRoutes = {
   home: undefined;
   new: undefined;
+  singOut: undefined;
+  toPay: undefined;
 }
 export type AppNavigatorRoutesProps = BottomTabNavigationProp<AppRoutes>
 
@@ -62,6 +70,47 @@ export function AppRoutes(){
             />
           )
         }}
+      />
+
+      <Screen 
+        name="toPay"
+        component={ToPay}
+        options={{
+          tabBarIcon: ({ color }) => (
+            <Money 
+              color={color}
+              size={iconSize}
+            />
+          )
+        }}
+      />
+
+
+      <Screen 
+        name="singOut"
+        component={() => {
+          const app = useApp();
+
+          useEffect(() => {
+            function handleLogout(){
+              app.currentUser?.logOut();
+            }
+
+            handleLogout();
+          }, []);
+
+          return <Loading />
+        }}
+
+        options={{
+          tabBarIcon: () => (
+            <SignOut 
+              color={COLORS.ORANGE_500}
+              size={iconSize}
+            />
+          )
+        }}
+        
       />
     </Navigator>
   )
