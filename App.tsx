@@ -7,6 +7,8 @@ import { AppProvider, UserProvider } from '@realm/react';
 import { ThemeProvider } from 'styled-components'
 import {  SafeAreaProvider } from 'react-native-safe-area-context'
 
+import { RealmProvider } from './src/libs/realm'
+
 import { Register } from "./src/screens/Register"
 
 import { REALM_APP_ID } from '@env'
@@ -35,7 +37,9 @@ export default function App() {
             translucent
           />
           <UserProvider fallback={Register}>
-            <Routes />
+            <RealmProvider>
+              <Routes />
+            </RealmProvider>
           </UserProvider>
         </ThemeProvider>
       </SafeAreaProvider>
