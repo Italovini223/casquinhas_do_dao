@@ -1,11 +1,11 @@
-import { Header } from '../../components/Header';
+import { HomeHeader } from '../../components/HomeHeader';
 import { Order } from '../../components/Order';
 import { Container, Content } from './styles';
 
 export function Home() {
   return (
     <Container>
-      <Header title='Meus Pedidos'/>
+      <HomeHeader title='Meus Pedidos'/>
       
       <Content>
         <Order status='Finished' title='TESATE'/>

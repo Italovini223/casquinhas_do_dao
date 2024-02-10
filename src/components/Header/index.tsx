@@ -2,29 +2,40 @@ import { TouchableOpacity } from 'react-native'
 
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
-import { useUser } from '@realm/react'
+import { useNavigation } from '@react-navigation/native'
+import { AppNavigatorRoutesProps } from '../../routes/app.routes'
+
+import { ArrowLeft } from 'phosphor-react-native'
 
 import { useTheme } from 'styled-components/native'
 
-import { Container, Picture, Title } from './styles'
+import { Container,Title } from './styles'
 
 type Props = {
   title: string;
 }
 
 export function Header({ title }: Props) {
-  const user = useUser();
   const insets = useSafeAreaInsets();
-
   const paddingTop = insets.top + 20;
+
+  const navigation = useNavigation<AppNavigatorRoutesProps>()
+
+  const { COLORS } = useTheme();
+
+  function handleBack(){
+    navigation.goBack();
+  }
 
   return (
     <Container style={{ paddingTop }}>
 
-      <Picture 
-        source={{ uri: user.profile.pictureUrl}}
-        placeholder="L184i9offQof00ayfQay~qj[fQj["
-      />
+      <TouchableOpacity onPress={handleBack}>
+        <ArrowLeft 
+          size={24}
+          color={COLORS.GRAY_100}
+        />
+      </TouchableOpacity>
       
       <Title>
         { title }

@@ -22,3 +22,9 @@ export const Title = styled.Text`
   font-size: ${({ theme }) => theme.FONT_SIZE.MD}px;
   font-family: ${({ theme }) => theme.FONT_FAMILY.BOLD};
 `;
+
+export const Picture = styled(Image)`
+  width: 54px;
+  height: 54px;
+  border-radius: 7px;
+`;

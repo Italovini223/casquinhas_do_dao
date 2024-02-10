@@ -8,7 +8,7 @@ type Props = TouchableOpacityProps & {
 
 export function Button({ title, isLoading, ...rest}: Props) {
   return (
-    <Container {...rest}>
+    <Container disabled={isLoading} {...rest}>
       {
         !isLoading ?
         <Title>
