@@ -8,11 +8,12 @@ import { ThemeProvider } from 'styled-components'
 import {  SafeAreaProvider } from 'react-native-safe-area-context'
 
 import { Register } from "./src/screens/Register"
-import { Home } from './src/screens/Home'
 
 import { REALM_APP_ID } from '@env'
 
 import theme from './src/theme'
+
+import { Routes } from './src/routes'
 
 import { Loading } from './src/components/Loading'
 
@@ -34,7 +35,7 @@ export default function App() {
             translucent
           />
           <UserProvider fallback={Register}>
-            <Home />
+            <Routes />
           </UserProvider>
         </ThemeProvider>
       </SafeAreaProvider>
