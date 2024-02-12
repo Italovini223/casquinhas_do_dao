@@ -1,4 +1,6 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useCallback } from 'react'
+
+import { useFocusEffect } from '@react-navigation/native'
 
 import { FlatList } from 'react-native'
 
@@ -41,13 +43,12 @@ export function Home() {
 
     } catch(error){
       Alert.alert('PEDIDOS', 'Erro ao carregas os pedidos');
-      console.log(error);
     }
   }
 
-  useEffect(() => {
+  useFocusEffect(useCallback(() => {
     fetchOrder();
-  }, [])
+  }, []));
   return (
     <Container>
       <HomeHeader title='Meus Pedidos'/>

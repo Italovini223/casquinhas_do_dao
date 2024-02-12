@@ -1,5 +1,9 @@
-import React from 'react';
-import { Container, Content, OrderTitle, OrderStatus, DataInfo } from './styles';
+import React from 'react'
+
+import { Container, Content, OrderTitle, OrderStatus, DataInfo } from './styles'
+
+import { useNavigation } from '@react-navigation/native'
+import { AppNavigatorRoutesProps } from '../../routes/app.routes'
 
 export type OrderProps = {
   id: string;
@@ -16,9 +20,15 @@ type Props = {
 }
 
 
-export function Order({  data:{ product_name, status, created_at }}: Props) {
+export function Order({  data:{ product_name, status, created_at, id }}: Props) {
+  const navigation = useNavigation<AppNavigatorRoutesProps>();
+
+  function handleDetails(){
+    navigation.navigate('details', { id });
+  }
+
   return (
-    <Container>
+    <Container onPress={handleDetails}>
       <Content>
         <OrderTitle>
           {product_name}

@@ -14,6 +14,7 @@ import { New } from "../screens/New"
 import { Home } from "../screens/Home"
 import { useEffect } from "react"
 import { ToPay } from "../screens/ToPay"
+import { Details } from "../screens/Details"
 
 
 type AppRoutes = {
@@ -21,6 +22,7 @@ type AppRoutes = {
   new: undefined;
   singOut: undefined;
   toPay: undefined;
+  details: { id: string }
 }
 export type AppNavigatorRoutesProps = BottomTabNavigationProp<AppRoutes>
 
@@ -110,7 +112,17 @@ export function AppRoutes(){
             />
           )
         }}
-        
+      />
+
+      <Screen 
+        name="details"
+        component={Details}
+        options={{
+          tabBarButton: () => null,
+          tabBarStyle: {
+            display: 'none'
+          }
+        }}
       />
     </Navigator>
   )
