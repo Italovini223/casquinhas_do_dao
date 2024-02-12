@@ -1,17 +1,48 @@
+import { useEffect, useState } from 'react'
+
+import { FlatList } from 'react-native'
+
+import dayjs from 'dayjs'
+
 import { useQuery } from '../../libs/realm'
+
+import { useUser } from '@realm/react'
 
 import { Order } from '../../libs/realm/schemas/order'
 
 import { HomeHeader } from '../../components/HomeHeader'
-import { Order as OrderComponent } from '../../components/Order'
+import { Order as OrderComponent, OrderProps } from '../../components/Order'
 import { Container, Content } from './styles'
-import { useEffect } from 'react'
+import { Alert } from 'react-native'
 
 export function Home() {
+  const [userOrders, setUserOrders] = useState<OrderProps[]>([])
   const orders = useQuery(Order);
+  const user = useUser();
 
   function fetchOrder(){
-    console.log(orders)
+    try {
+      const response = orders.filtered(`user_id = '${user.id}' SORT(created_at DESC)`);
+
+      const formattedOrder = response.map(item => {
+        return({
+          id: item._id,
+          status: item.order_status,
+          user_name: item.user_name,
+          its_paid: item.its_paid,
+          created_at: dayjs(item.created_at).format('[pedido em] DD/MM/YYYY [as] HH:mm'),
+          price: item.total_price,
+          product_name: item.product_name,
+          quantity: item.product_quantity,
+        })
+      })
+
+      setUserOrders(formattedOrder);
+
+    } catch(error){
+      Alert.alert('PEDIDOS', 'Erro ao carregas os pedidos');
+      console.log(error);
+    }
   }
 
   useEffect(() => {
@@ -22,7 +53,15 @@ export function Home() {
       <HomeHeader title='Meus Pedidos'/>
       
       <Content>
-        <OrderComponent status='Finished' title='TESATE'/>
+        <FlatList 
+          data={userOrders}
+          renderItem={({ item }) => (
+            <OrderComponent 
+              data={item}
+              key={item.id}
+            />
+          )}
+        />
       </Content>
     </Container>
   );

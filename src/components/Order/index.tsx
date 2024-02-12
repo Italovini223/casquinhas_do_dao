@@ -1,23 +1,36 @@
 import React from 'react';
-import { Container, Content, OrderTitle, statusProps, OrderStatus } from './styles';
+import { Container, Content, OrderTitle, OrderStatus, DataInfo } from './styles';
 
-type Props = {
-  title: string;
-  status: statusProps;
+export type OrderProps = {
+  id: string;
+  product_name: string;
+  user_name: string;
+  its_paid: boolean;
+  created_at: string;
+  price: number;
+  status: string;
 }
 
-export function Order({ status, title }: Props) {
+type Props = {
+  data: OrderProps;
+}
+
+
+export function Order({  data:{ product_name, status, created_at }}: Props) {
   return (
     <Container>
       <Content>
         <OrderTitle>
-          {title}
+          {product_name}
         </OrderTitle>
 
         <OrderStatus 
           status={status}
         />
       </Content>
+      <DataInfo>
+        { created_at }
+      </DataInfo>
     </Container>
   );
 }

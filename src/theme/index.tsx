@@ -16,6 +16,8 @@ export default {
 
     ORANGE_500: '#f97316',
 
+    RED_500: '#dc2626'
+
   },
   FONT_FAMILY: {
     REGULAR: 'Roboto_400Regular',

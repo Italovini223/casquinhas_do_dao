@@ -2,10 +2,9 @@ import styled from 'styled-components/native';
 
 import { TouchableOpacity } from 'react-native';
 
-export type statusProps = 'InProgress' | 'Finished';
 
 type orderStatusColorProps = {
-  status: statusProps;
+  status: string;
 }
 
 export const Container = styled(TouchableOpacity)`
@@ -15,6 +14,8 @@ export const Container = styled(TouchableOpacity)`
 
   align-items: center;
   justify-content: center;
+
+  margin-bottom: 10px;
 
   background-color: ${({ theme }) => theme.COLORS.GRAY_700};
 `;
@@ -43,5 +44,12 @@ export const OrderStatus = styled.View<orderStatusColorProps>`
   width: 10px;
   height: 10px;
   border-radius: 10px;
-  background-color: ${({ theme, status }) => status === 'Finished' ? theme.COLORS.BRAND_LIGHT : theme.COLORS.WHITE};
+  background-color: ${({ theme, status }) => status === 'Finished' ? theme.COLORS.BRAND_LIGHT : theme.COLORS.RED_500};
+`;
+
+export const DataInfo = styled.Text`
+  width: 100%;
+  padding:0 10px;
+
+  color: ${({ theme }) => theme.COLORS.GRAY_300};
 `;

@@ -1,5 +1,7 @@
 import 'react-native-get-random-values'
 
+import './src/libs/dayjs'
+
 import { StatusBar } from 'react-native';
 
 import { Roboto_400Regular, Roboto_700Bold, useFonts } from '@expo-google-fonts/roboto'
