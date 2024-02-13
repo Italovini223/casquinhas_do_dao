@@ -15,6 +15,7 @@ import { Home } from "../screens/Home"
 import { useEffect } from "react"
 import { ToPay } from "../screens/ToPay"
 import { Details } from "../screens/Details"
+import { RequestAdmin } from "../screens/RequestAdmin"
 
 
 type AppRoutes = {
@@ -22,7 +23,8 @@ type AppRoutes = {
   new: undefined;
   singOut: undefined;
   toPay: undefined;
-  details: { id: string }
+  details: { id: string };
+  requestAdmin: undefined;
 }
 export type AppNavigatorRoutesProps = BottomTabNavigationProp<AppRoutes>
 
@@ -117,6 +119,17 @@ export function AppRoutes(){
       <Screen 
         name="details"
         component={Details}
+        options={{
+          tabBarButton: () => null,
+          tabBarStyle: {
+            display: 'none'
+          }
+        }}
+      />
+
+      <Screen 
+        name="requestAdmin"
+        component={RequestAdmin}
         options={{
           tabBarButton: () => null,
           tabBarStyle: {
