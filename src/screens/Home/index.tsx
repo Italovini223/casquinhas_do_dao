@@ -21,7 +21,6 @@ export function Home() {
   const [userOrders, setUserOrders] = useState<OrderProps[]>([])
   const orders = useQuery(Order);
   const user = useUser();
-
   function fetchOrder(){
     try {
       const response = orders.filtered(`user_id = '${user.id}' SORT(created_at DESC)`);
@@ -48,7 +47,7 @@ export function Home() {
 
   useFocusEffect(useCallback(() => {
     fetchOrder();
-  }, []));
+  }, [orders]));
   return (
     <Container>
       <HomeHeader title='Meus Pedidos'/>

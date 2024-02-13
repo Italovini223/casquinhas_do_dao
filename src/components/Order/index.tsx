@@ -24,7 +24,7 @@ export function Order({  data:{ product_name, status, created_at, id }}: Props) 
   const navigation = useNavigation<AppNavigatorRoutesProps>();
 
   function handleDetails(){
-    navigation.navigate('details', { id });
+    navigation.navigate('details', { id: id.toString() });
   }
 
   return (
