@@ -19,11 +19,22 @@ import { Alert } from 'react-native'
 
 export function Home() {
   const [userOrders, setUserOrders] = useState<OrderProps[]>([])
+  const [isAdmin, setIsAdmin] = useState(false);
+
   const orders = useQuery(Order);
   const user = useUser();
+
+  const title = isAdmin ? 'Todos os pedidos' : 'Meus pedidos';
+
   function fetchOrder(){
     try {
-      const response = orders.filtered(`user_id = '${user.id}' SORT(created_at DESC)`);
+      let response;
+
+      if(isAdmin){
+        response = orders
+      } else {
+        response = orders.filtered(`user_id = '${user.id}' SORT(created_at DESC)`);
+      }
 
       const formattedOrder = response.map(item => {
         return({
@@ -31,7 +42,7 @@ export function Home() {
           status: item.order_status,
           user_name: item.user_name,
           its_paid: item.its_paid,
-          created_at: dayjs(item.created_at).format('[pedido em] DD/MM/YYYY [as] HH:mm'),
+          created_at: dayjs(item.created_at).format('DD/MM/YYYY [as] HH:mm'),
           price: item.total_price,
           product_name: item.product_name,
           quantity: item.product_quantity,
@@ -45,12 +56,16 @@ export function Home() {
     }
   }
 
+  useEffect(() => {
+    setIsAdmin(true);
+  }, []);
+
   useFocusEffect(useCallback(() => {
     fetchOrder();
   }, [orders]));
   return (
     <Container>
-      <HomeHeader title='Meus Pedidos'/>
+      <HomeHeader title={title}/>
       
       <Content>
         <FlatList 

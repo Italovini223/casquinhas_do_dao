@@ -48,8 +48,24 @@ export const OrderStatus = styled.View<orderStatusColorProps>`
 `;
 
 export const DataInfo = styled.Text`
-  width: 100%;
   padding:0 10px;
 
   color: ${({ theme }) => theme.COLORS.GRAY_300};
+`;
+
+export const UserInfo = styled.Text`
+  padding:0 10px;
+
+  color: ${({ theme }) => theme.COLORS.GRAY_300};
+`;
+
+export const Infos = styled.View`
+  width: 100%;
+
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+
+  text-align: left;
 `;

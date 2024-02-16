@@ -1,9 +1,11 @@
 import React from 'react'
 
-import { Container, Content, OrderTitle, OrderStatus, DataInfo } from './styles'
+import { Container, Content, OrderTitle, OrderStatus, DataInfo, Infos, UserInfo } from './styles'
 
 import { useNavigation } from '@react-navigation/native'
+
 import { AppNavigatorRoutesProps } from '../../routes/app.routes'
+import { AdminNavigationRoutesProps } from '../../routes/admin.routes'
 
 export type OrderProps = {
   id: string;
@@ -20,15 +22,22 @@ type Props = {
 }
 
 
-export function Order({  data:{ product_name, status, created_at, id }}: Props) {
-  const navigation = useNavigation<AppNavigatorRoutesProps>();
+export function Order({  data:{ product_name, status, created_at, id, user_name }}: Props) {
+  const appNavigation = useNavigation<AppNavigatorRoutesProps>();
+  const adminNavigation = useNavigation<AdminNavigationRoutesProps>();
+
+  const isAdmin = true;
 
   function handleDetails(){
-    navigation.navigate('details', { id: id.toString() });
+    appNavigation.navigate('details', { id: id.toString() });
+  }
+
+  function handleGoEditOrder(){
+    adminNavigation.navigate('editOrder', { id: id.toString() });
   }
 
   return (
-    <Container onPress={handleDetails}>
+    <Container onPress={isAdmin ? handleGoEditOrder : handleDetails}>
       <Content>
         <OrderTitle>
           {product_name}
@@ -38,9 +47,17 @@ export function Order({  data:{ product_name, status, created_at, id }}: Props) 
           status={status}
         />
       </Content>
-      <DataInfo>
-        { created_at }
-      </DataInfo>
+      <Infos>
+        <DataInfo>
+          { created_at }
+        </DataInfo>
+        {
+          isAdmin &&
+          <UserInfo>
+            por:  { user_name }
+          </UserInfo>
+        }
+      </Infos>
     </Container>
   );
 }
