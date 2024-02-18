@@ -3,7 +3,9 @@ import { TouchableOpacity } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
 import { useNavigation } from '@react-navigation/native'
+
 import { AppNavigatorRoutesProps } from '../../routes/app.routes'
+import { AdminNavigationRoutesProps } from '../../routes/admin.routes'
 
 import { ArrowLeft } from 'phosphor-react-native'
 
@@ -19,12 +21,19 @@ export function Header({ title }: Props) {
   const insets = useSafeAreaInsets();
   const paddingTop = insets.top + 20;
 
-  const navigation = useNavigation<AppNavigatorRoutesProps>()
+  const appNavigation = useNavigation<AppNavigatorRoutesProps>();
+  const adminNavigation = useNavigation<AdminNavigationRoutesProps>();
 
   const { COLORS } = useTheme();
 
+  const isAdmin = true;
+
   function handleBack(){
-    navigation.goBack();
+    if(isAdmin){
+      adminNavigation.goBack();
+    } else {
+      appNavigation.goBack();
+    }
   }
 
   return (
