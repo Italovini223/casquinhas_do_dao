@@ -1,6 +1,10 @@
 import styled from 'styled-components/native';
 
-export const Container = styled.TouchableOpacity`
+type DisableButtonPros = {
+  Isdisabled: boolean
+}
+
+export const Container = styled.TouchableOpacity<DisableButtonPros>`
   flex: 1;
   min-height: 56px;
   max-height: 56px;
@@ -13,6 +17,8 @@ export const Container = styled.TouchableOpacity`
 
   align-items: center;
   justify-content: center;
+
+  opacity: ${({ Isdisabled}) => Isdisabled ? 0.3 : 1};
 
   background-color: ${({ theme }) => theme.COLORS.BRAND_MID};
 `;

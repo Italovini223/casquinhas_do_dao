@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react'
+import { useState, useCallback, useEffect } from 'react'
 
 import { useFocusEffect } from '@react-navigation/native'
 
@@ -6,6 +6,11 @@ import { useRoute } from '@react-navigation/native'
 
 import { useObject } from '../../libs/realm'
 import { useTheme } from 'styled-components/native'
+
+import { useNavigation } from '@react-navigation/native'
+import { AdminNavigationRoutesProps } from '../../routes/admin.routes'
+
+import { useRealm  } from '../../libs/realm'
 
 import { CaretDown } from 'phosphor-react-native'
 
@@ -18,6 +23,7 @@ import { Container, Content, DefaultSelect, DefaultSelectText } from './styles'
 import { Input } from '../../components/Input'
 import { Select } from '../../components/Select'
 import { Button } from '../../components/Button'
+import { Alert } from 'react-native'
 
 const itsPaidValues = ['Pago', 'Aguardando pagamento'];
 const orderStatusValues = ['em preparação', 'finalizado'];
@@ -33,6 +39,10 @@ type RouteParams = {
 export function EditOrder() {
   const [orderStatus, setOrderStatus] = useState('');
   const [itsPaid, setItsPaid] = useState('');
+  const [disable, setDisable] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
+
+  const realm = useRealm();
 
   const { COLORS } = useTheme();
 
@@ -41,8 +51,35 @@ export function EditOrder() {
 
   const order = useObject(Order, new BSON.UUID(id) as unknown as string);
 
+  const navigation = useNavigation<AdminNavigationRoutesProps>();
+
   const total = `R$ ${order?.total_price.toString()},00`
 
+  function handleOderChanges(){
+    try {
+      setIsLoading(true);
+
+      if(!order){
+        return Alert.alert('Erro', 'Nao ha Pedido para ser modificado.')
+      }
+
+      realm.write(() => {
+        order.its_paid = itsPaid === 'Pago' ? true : false,
+        order.order_status = orderStatus === 'em preparação' ? 'in preparation' : 'finished'
+        order.updated_at = new Date().toString()
+      })
+
+      Alert.alert("Pedido", 'Pedido atualizado com sucesso');
+
+      navigation.navigate('home');
+
+    } catch(error){
+      Alert.alert('Erro', 'Nao foi possível atualizar o pedido');
+      console.log(error);
+    } finally {
+      setIsLoading(false);
+    }
+  }
 
 
   useFocusEffect(useCallback(() => {
@@ -53,6 +90,15 @@ export function EditOrder() {
     setOrderStatus(status);
 
   }, [order]));
+
+  useEffect(() => {
+    const checkOrderStatus = orderStatus === 'em preparação' ? 'in preparation' : 'finished'
+    const checkItsPaid = itsPaid === 'Pago' ? true : false;
+
+    const haveChanged = order?.order_status !== checkOrderStatus || order?.its_paid !== checkItsPaid;
+
+    setDisable(!haveChanged);
+  }, [orderStatus, itsPaid]);
 
   
   return (
@@ -150,6 +196,9 @@ export function EditOrder() {
 
         <Button 
           title='Editar produto'
+          disabled={disable}
+          isLoading={isLoading}
+          onPress={handleOderChanges}
         />
       </Content>
     </Container>

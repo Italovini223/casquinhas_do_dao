@@ -26,6 +26,8 @@ export function RequestAdmin() {
   const realm = useRealm();
   const requests = useQuery(Admin)
 
+
+
   function handleUserRequests(){
     const request = requests.filtered(`user_id = '${user.id}'`)[0];
     setUserRequest(request);

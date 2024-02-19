@@ -10,6 +10,8 @@ import { useQuery } from '../../libs/realm'
 
 import { useUser } from '@realm/react'
 
+import { useRealm } from '../../libs/realm'
+
 import { Order } from '../../libs/realm/schemas/order'
 
 import { HomeHeader } from '../../components/HomeHeader'
@@ -23,6 +25,7 @@ export function Home() {
 
   const orders = useQuery(Order);
   const user = useUser();
+  const realm = useRealm();
 
   const title = isAdmin ? 'Todos os pedidos' : 'Meus pedidos';
 
@@ -63,6 +66,17 @@ export function Home() {
   useFocusEffect(useCallback(() => {
     fetchOrder();
   }, [orders]));
+
+  useEffect(() => {
+    realm.addListener('change', () => fetchOrder());
+
+    return () => {
+      if(realm && !realm.isClosed){
+        realm.removeListener('change', fetchOrder);
+      }
+    }
+  });
+
   return (
     <Container>
       <HomeHeader title={title}/>
