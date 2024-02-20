@@ -26,6 +26,17 @@ export const OrderPrice = styled.Text`
   color: ${({ theme }) => theme.COLORS.BRAND_MID};
 `;
 
-export const DataDetails = styled.Text`
+export const DetailsContainer = styled.View`
+  width: 100%;
+
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+
+  padding: 0 10px;
+`;
+
+export const TextDetails = styled.Text`
   color: ${({ theme }) => theme.COLORS.BRAND_MID};
 `;

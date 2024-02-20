@@ -1,5 +1,5 @@
 import React from 'react';
-import { Container, Content, DataDetails, OrderPrice, ProductName } from './styles';
+import { Container, Content, TextDetails, OrderPrice, ProductName, DetailsContainer } from './styles';
 
 import { OrderProps } from '../Order'
 
@@ -7,7 +7,9 @@ type Props = {
   data: OrderProps;
 }
 
-export function DoNotPayed({ data: {product_name, price, created_at} }: Props) {
+export function DoNotPayed({ data: {product_name, price, created_at, user_name} }: Props) {
+  const isAdmin = true;
+
   return (
     <Container>
       <Content>
@@ -19,9 +21,18 @@ export function DoNotPayed({ data: {product_name, price, created_at} }: Props) {
         </OrderPrice>
       </Content>
 
-      <DataDetails>
-        { created_at }
-      </DataDetails>
+      <DetailsContainer>
+        <TextDetails>
+          { created_at }
+        </TextDetails>
+        
+        {
+          isAdmin && 
+          <TextDetails>
+           por { user_name }
+          </TextDetails>
+        }
+      </DetailsContainer>
     </Container>
   );
 }

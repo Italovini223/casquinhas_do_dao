@@ -17,16 +17,32 @@ import { Header } from '../../components/Header'
 import { Container, Content, TotalContainer } from './styles'
 import { DoNotPayed } from '../../components/DoNotPayed'
 import { TotalPrice } from '../New/styles'
+import { SearchInput } from '../../components/SearchInput'
+import { Loading } from '../../components/Loading'
 
 export function ToPay(){
   const [notPayedOrders, setNotPayedOrders] = useState<OrderProps[]>([]);
+  const [isAdmin, setIsAdmin] = useState(true);
+  const [searchInput, setSearchInput] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+
   const orders = useQuery(Order);
   const user = useUser();
+
+
+
 
   
   function fetchNotPayedOrders(){
     try {
-      const response = orders.filtered(`user_id = '${user.id}' SORT(created_at DESC)`);
+
+      let response;
+      if(!isAdmin){
+        response = orders.filtered(`user_id = '${user.id}' SORT(created_at DESC)`);
+      } else {
+        response = orders;
+      }
+      
       const filteredResponse = response.filtered("its_paid == $0", false);
 
       const formattedOrder = filteredResponse.map(item => {
@@ -35,7 +51,7 @@ export function ToPay(){
           status: item.order_status,
           user_name: item.user_name,
           its_paid: item.its_paid,
-          created_at: dayjs(item.created_at).format('[pedido em] DD/MM/YYYY [as] HH:mm'),
+          created_at: dayjs(item.created_at).format('[em] DD/MM/YYYY [as] HH:mm'),
           price: item.total_price,
           product_name: item.product_name,
           quantity: item.product_quantity,
@@ -47,6 +63,38 @@ export function ToPay(){
     } catch(error){
       Alert.alert('PEDIDOS', 'Erro ao carregas os pedidos');
       console.log(error);
+    }
+  }
+
+  function handleSearchByName(){
+    try {
+      setIsLoading(true);
+
+      if(searchInput.length == 0){
+        return Alert.alert("BUSCA", "Digite um nome para ser pesquisado");
+      }
+  
+      const response = orders.filtered(`user_name = '${searchInput}'`);
+  
+      const formattedOrders = response.map(item => {
+        return({
+          id: item._id,
+          status: item.order_status,
+          user_name: item.user_name,
+          its_paid: item.its_paid,
+          created_at: dayjs(item.created_at).format('[em] DD/MM/YYYY [as] HH:mm'),
+          price: item.total_price,
+          product_name: item.product_name,
+          quantity: item.product_quantity,
+        })
+      });
+  
+      setNotPayedOrders(formattedOrders);
+
+    } catch (error){
+      console.log(error);
+    } finally {
+      setIsLoading(false);
     }
   }
 
@@ -69,23 +117,35 @@ export function ToPay(){
     <Container>
       <Header title='Não pagos'/>
       <Content>
-        <FlatList 
-          data={notPayedOrders}
-          renderItem={({ item }) => (
-            <DoNotPayed 
-              data={item}
-            />
-          )}
+        <SearchInput 
+          onPress={handleSearchByName} 
+          placeholder='Busque pelo nome' 
+          onChangeText={setSearchInput}
         />
 
-        <TotalContainer>
-          <TotalPrice>
-            Total 
-          </TotalPrice>
-          <TotalPrice>
-            R$ { String(calculateTotal()) }, 00
-          </TotalPrice>
-        </TotalContainer>
+        {
+          isLoading ? <Loading /> :
+          <>
+          <FlatList 
+            data={notPayedOrders}
+            renderItem={({ item }) => (
+              <DoNotPayed 
+                data={item}
+              />
+            )}
+          />
+
+          <TotalContainer>
+            <TotalPrice>
+              Total 
+            </TotalPrice>
+            <TotalPrice>
+              R$ { String(calculateTotal()) }, 00
+            </TotalPrice>
+          </TotalContainer>
+          </>
+        }
+
       </Content>
 
     </Container>
