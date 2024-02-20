@@ -14,7 +14,7 @@ import { Order } from '../../libs/realm/schemas/order'
 import { useUser } from '@realm/react'
 
 import { Header } from '../../components/Header'
-import { Container, Content, TotalContainer } from './styles'
+import { Container, Content, Empty, EmptyContent, TotalContainer } from './styles'
 import { DoNotPayed } from '../../components/DoNotPayed'
 import { TotalPrice } from '../New/styles'
 import { SearchInput } from '../../components/SearchInput'
@@ -128,6 +128,13 @@ export function ToPay(){
           <>
           <FlatList 
             data={notPayedOrders}
+            ListEmptyComponent={() => (
+              <EmptyContent>
+                <Empty>
+                  Ainda nao ha pedidos
+                </Empty>
+              </EmptyContent>
+            )}
             renderItem={({ item }) => (
               <DoNotPayed 
                 data={item}
