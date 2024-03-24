@@ -12,6 +12,7 @@ import dayjs from 'dayjs'
 
 import { Order } from '../../libs/realm/schemas/order'
 import { useUser } from '@realm/react'
+import { Admin } from '../../libs/realm/schemas/admin'
 
 import { Header } from '../../components/Header'
 import { Container, Content, Empty, EmptyContent, TotalContainer } from './styles'
@@ -22,23 +23,23 @@ import { Loading } from '../../components/Loading'
 
 export function ToPay(){
   const [notPayedOrders, setNotPayedOrders] = useState<OrderProps[]>([]);
-  const [isAdmin, setIsAdmin] = useState(true);
   const [searchInput, setSearchInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
   const orders = useQuery(Order);
+  const adminsRequests = useQuery(Admin);
   const user = useUser();
 
+  const admin = adminsRequests.find(admin => admin.is_admin == true && admin.user_id == user.id);
 
-
-
+  const isAdmin = admin ? true : false;
   
   function fetchNotPayedOrders(){
     try {
 
       let response;
       if(!isAdmin){
-        response = orders.filtered(`user_id = '${user.id}' SORT(created_at DESC)`);
+        response = orders.filtered(`user_id = '${user.id}' SORT(created_at DESC)`); 
       } else {
         response = orders;
       }
@@ -108,7 +109,9 @@ export function ToPay(){
   }
 
   useFocusEffect(useCallback(() => {
+
     fetchNotPayedOrders();
+
   }, [orders]));
 
 
