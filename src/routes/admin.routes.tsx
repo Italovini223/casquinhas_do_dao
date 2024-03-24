@@ -5,13 +5,13 @@ import { createBottomTabNavigator, BottomTabNavigationProp } from "@react-naviga
 import { useTheme } from "styled-components/native"
 import { useApp } from "@realm/react"
 
-import { House, Money, SignOut } from "phosphor-react-native"
+import { House, Money, SignOut, IdentificationBadge } from "phosphor-react-native"
 
+import { Loading } from "../components/Loading"
 import { Home } from "../screens/Home"
 import { EditOrder } from "../screens/EditOrder"
 import { ToPay } from "../screens/ToPay"
-import { Loading } from "../components/Loading"
-
+import { AdminRequest } from "../screens/AdminRequest"
 
 type AdminRoutes = {
   home: undefined;
@@ -20,6 +20,7 @@ type AdminRoutes = {
   editOrder: { id: string };
   toPay: undefined;
   singOut: undefined;
+  adminRequest: undefined;
 }
 
 export type AdminNavigationRoutesProps = BottomTabNavigationProp<AdminRoutes>
@@ -75,6 +76,19 @@ export function AdminRoutes(){
         options={{
           tabBarIcon: ({ color }) => (
             <Money 
+              color={color}
+              size={iconSize}
+            />
+          )
+        }}
+      />
+
+      <Screen
+        name="adminRequest"
+        component={AdminRequest}
+        options={{
+          tabBarIcon: ({ color }) => (
+            <IdentificationBadge 
               color={color}
               size={iconSize}
             />

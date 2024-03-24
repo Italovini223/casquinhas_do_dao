@@ -4,6 +4,7 @@ import { Platform } from "react-native"
 
 import { useApp } from "@realm/react"
 
+import { useQuery } from "@realm/react"
 import { House, IceCream, SignOut, Money } from "phosphor-react-native"
 
 import { useTheme } from "styled-components/native"

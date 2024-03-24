@@ -65,7 +65,7 @@ export function EditOrder() {
 
       realm.write(() => {
         order.its_paid = itsPaid === 'Pago' ? true : false,
-        order.order_status = orderStatus === 'em preparação' ? 'in preparation' : 'finished'
+        order.order_status = orderStatus === 'em preparação' ? 'in preparation' : 'finished',
         order.updated_at = new Date().toString()
       })
 
