@@ -2,6 +2,8 @@ import 'react-native-get-random-values'
 
 import './src/libs/dayjs'
 
+import { IsAdminContextProvider } from './src/contexts/isAdmin';
+
 import { StatusBar } from 'react-native';
 
 import { Roboto_400Regular, Roboto_700Bold, useFonts } from '@expo-google-fonts/roboto'
@@ -42,7 +44,9 @@ export default function App() {
           />
           <UserProvider fallback={Register}>
             <RealmProvider>
-              <Routes />
+              <IsAdminContextProvider>
+                <Routes />
+              </IsAdminContextProvider>
             </RealmProvider>
           </UserProvider>
         </ThemeProvider>

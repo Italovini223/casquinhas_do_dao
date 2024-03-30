@@ -5,6 +5,8 @@ import { createBottomTabNavigator, BottomTabNavigationProp } from "@react-naviga
 import { useTheme } from "styled-components/native"
 import { useApp } from "@realm/react"
 
+import { useIsAdmin } from "../hooks/useIsAdmin"
+
 import { House, Money, SignOut, IdentificationBadge } from "phosphor-react-native"
 
 import { Loading } from "../components/Loading"
@@ -29,6 +31,7 @@ const { Navigator, Screen } = createBottomTabNavigator<AdminRoutes>();
 export function AdminRoutes(){
   const { COLORS } = useTheme();
   const iconSize = 26;
+  const { removeIsAdmin } = useIsAdmin();
   
   return(
     <Navigator
@@ -105,7 +108,8 @@ export function AdminRoutes(){
             function handleLogout(){
               app.currentUser?.logOut();
             }
-
+            
+            removeIsAdmin();
             handleLogout();
           }, []);
 

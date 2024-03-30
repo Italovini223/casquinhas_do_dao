@@ -12,7 +12,7 @@ import dayjs from 'dayjs'
 
 import { Order } from '../../libs/realm/schemas/order'
 import { useUser } from '@realm/react'
-import { Admin } from '../../libs/realm/schemas/admin'
+import { useIsAdmin } from '../../hooks/useIsAdmin'
 
 import { Header } from '../../components/Header'
 import { Container, Content, Empty, EmptyContent, TotalContainer } from './styles'
@@ -25,14 +25,10 @@ export function ToPay(){
   const [notPayedOrders, setNotPayedOrders] = useState<OrderProps[]>([]);
   const [searchInput, setSearchInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-
+  const { isAdmin } = useIsAdmin();
   const orders = useQuery(Order);
-  const adminsRequests = useQuery(Admin);
   const user = useUser();
 
-  const admin = adminsRequests.find(admin => admin.is_admin == true && admin.user_id == user.id);
-
-  const isAdmin = admin ? true : false;
   
   function fetchNotPayedOrders(){
     try {

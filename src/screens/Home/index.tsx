@@ -7,7 +7,7 @@ import { FlatList } from 'react-native'
 import dayjs from 'dayjs'
 
 import { useQuery } from '../../libs/realm'
-
+import { useIsAdmin } from '../../hooks/useIsAdmin'
 import { useUser } from '@realm/react'
 
 import { useRealm } from '../../libs/realm'
@@ -22,16 +22,12 @@ import { Alert } from 'react-native'
 
 export function Home() {
   const [userOrders, setUserOrders] = useState<OrderProps[]>([])
-
   const orders = useQuery(Order);
-  const adminRequests = useQuery(Admin);
-
   const user = useUser();
   const realm = useRealm();
+  const { isAdmin } = useIsAdmin();
 
-  const admin = adminRequests.find(admin => admin.is_admin == true && admin.user_id == user.id);
 
-  const isAdmin = admin ? true : false;
 
   const title = isAdmin ? 'Todos os pedidos' : 'Meus pedidos';
 

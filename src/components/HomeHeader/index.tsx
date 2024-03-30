@@ -1,8 +1,9 @@
-import { TouchableOpacity } from 'react-native'
+import { Alert, TouchableOpacity } from 'react-native'
 
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
 import { useUser } from '@realm/react'
+import { useIsAdmin } from '../../hooks/useIsAdmin'
 
 import { useNavigation } from '@react-navigation/native'
 import { AppNavigatorRoutesProps } from '../../routes/app.routes'
@@ -18,9 +19,14 @@ export function HomeHeader({ title }: Props) {
   const user = useUser();
   const insets = useSafeAreaInsets();
   const navigation = useNavigation<AppNavigatorRoutesProps>();
+  const { isAdmin } = useIsAdmin();
 
   function handleGoRequestAdmin(){
-    navigation.navigate('requestAdmin');
+    if(isAdmin) {
+      return Alert.alert('Administrador', 'Você já é um administrador');
+    } else {
+      navigation.navigate('requestAdmin');
+    }
   }
 
   const paddingTop = insets.top + 20;
