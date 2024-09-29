@@ -5,6 +5,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { useNavigation } from '@react-navigation/native'
 
 import { AppNavigatorRoutesProps } from '../../routes/app.routes'
+
 import { AdminNavigationRoutesProps } from '../../routes/admin.routes'
 
 import { ArrowLeft } from 'phosphor-react-native'

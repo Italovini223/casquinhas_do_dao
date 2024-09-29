@@ -7,13 +7,14 @@ import { useApp } from "@realm/react"
 
 import { useIsAdmin } from "../hooks/useIsAdmin"
 
-import { House, Money, SignOut, IdentificationBadge } from "phosphor-react-native"
+import { House, Money, SignOut, IdentificationBadge, ListPlus } from "phosphor-react-native"
 
 import { Loading } from "../components/Loading"
 import { Home } from "../screens/Home"
 import { EditOrder } from "../screens/EditOrder"
 import { ToPay } from "../screens/ToPay"
 import { AdminRequest } from "../screens/AdminRequest"
+import { NewProduct } from "../screens/NewProduct"
 
 type AdminRoutes = {
   home: undefined;
@@ -99,7 +100,20 @@ export function AdminRoutes(){
         }}
       />
 
-<Screen 
+      <Screen 
+        name="newProduct"
+        component={NewProduct}
+        options={{
+          tabBarIcon: ({ color }) => (
+            <ListPlus  
+              color={color}
+              size={iconSize}
+            />
+          )
+        }}
+      />
+
+      <Screen 
         name="singOut"
         component={() => {
           const app = useApp();
