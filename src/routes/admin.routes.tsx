@@ -7,7 +7,7 @@ import { useApp } from "@realm/react"
 
 import { useIsAdmin } from "../hooks/useIsAdmin"
 
-import { House, Money, SignOut, IdentificationBadge, ListPlus } from "phosphor-react-native"
+import { House, Money, SignOut, IdentificationBadge, ListPlus, Package } from "phosphor-react-native"
 
 import { Loading } from "../components/Loading"
 import { Home } from "../screens/Home"
@@ -15,6 +15,7 @@ import { EditOrder } from "../screens/EditOrder"
 import { ToPay } from "../screens/ToPay"
 import { AdminRequest } from "../screens/AdminRequest"
 import { NewProduct } from "../screens/NewProduct"
+import { Products } from "../screens/Products"
 
 type AdminRoutes = {
   home: undefined;
@@ -24,6 +25,7 @@ type AdminRoutes = {
   toPay: undefined;
   singOut: undefined;
   adminRequest: undefined;
+  products: undefined;
 }
 
 export type AdminNavigationRoutesProps = BottomTabNavigationProp<AdminRoutes>
@@ -106,6 +108,19 @@ export function AdminRoutes(){
         options={{
           tabBarIcon: ({ color }) => (
             <ListPlus  
+              color={color}
+              size={iconSize}
+            />
+          )
+        }}
+      />
+
+      <Screen 
+        name="products"
+        component={Products}
+        options={{
+          tabBarIcon: ({ color }) => (
+            <Package 
               color={color}
               size={iconSize}
             />
