@@ -1,6 +1,7 @@
 import { Alert, TouchableOpacity } from 'react-native'
 
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
+import Avatar from 'react-avatar'
 
 import { useUser } from '@realm/react'
 import { useIsAdmin } from '../../hooks/useIsAdmin'
@@ -35,9 +36,12 @@ export function HomeHeader({ title }: Props) {
     <Container style={{ paddingTop }}>
 
       <TouchableOpacity onPress={handleGoRequestAdmin}>
-        <Picture 
-          source={{ uri: user.profile.pictureUrl}}
-          placeholder="L184i9offQof00ayfQay~qj[fQj["
+        <Avatar
+          size="54"
+          name={user.name}
+          round={true}
+          textSizeRatio={2}
+          style={{ marginRight: 10 }}
         />
         
       </TouchableOpacity>

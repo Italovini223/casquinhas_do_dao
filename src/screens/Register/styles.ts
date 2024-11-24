@@ -16,8 +16,10 @@ export const Content = styled.View`
 
   display: flex;
   align-items: center;
+  flex-direction: column;
+  width: 100%;
   justify-content: center;
-
+  
   gap: 20px;
 
   padding: 0 40px;

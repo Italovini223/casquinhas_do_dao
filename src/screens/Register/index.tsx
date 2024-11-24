@@ -1,59 +1,56 @@
-import { useEffect, useState } from 'react'
+import { useState, useContext } from 'react'
 
 import { IceCream } from 'phosphor-react-native'
 
-import * as WebBrowser from 'expo-web-browser'
-import * as Google from 'expo-auth-session/providers/google'
+import { api } from '../../utils/api'
 
-import { ANDROID_CLIENT_ID, IOS_CLIENT_ID } from '@env'
-
-import { Realm, useApp } from '@realm/react'
-
+import { storageUserSave } from '../../storage/storageUser'
+import { IsAdminContext } from '../../contexts/isAdmin'
 import { useTheme } from 'styled-components/native'
 
 import { Container, Content } from './styles'
+
 import { Button } from '../../components/Button'
+import { Input } from '../../components/Input'
+
 import { Alert } from 'react-native'
 
-WebBrowser.maybeCompleteAuthSession();
 
 export function Register() {
   const [isLoading, setIsLoading] = useState(false);
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+
   const { COLORS } = useTheme()
-  const app = useApp();
+  const { saveIfIsAdmin } = useContext(IsAdminContext)
 
-  const [_, response, googleSingIn] = Google.useAuthRequest({
-    androidClientId: IOS_CLIENT_ID,
-    iosClientId: IOS_CLIENT_ID,
-    scopes: ['profile', 'email']
-  });
 
-  function handleGoogleSingIn(){
-    setIsLoading(true);
+  async function handleSingIn(){
+    try {
+      setIsLoading(true);
 
-    googleSingIn().then((response) => {
-      if(response.type != 'success'){
-        setIsLoading(false);
+      if(!email || !password){
+        return Alert.alert('Erro', 'Preencha todos os campos');
       }
-    })
-  }
 
-  useEffect(() => {
-    if(response?.type === 'success'){
-      if(response.authentication?.idToken){
-        const credentials = Realm.Credentials.jwt(response.authentication.idToken);
+      const response = await api.post('/section', {
+        email,
+        password
+      });
 
-        app.logIn(credentials).catch((error) => {
-          Alert.alert('Entrar', 'Nao foi possível sincronizar a conta google');
-          setIsLoading(false);
-        })
-      }
-    } else {
+      setIsLoading(false);
+      console.log(response.data.user);
+      await storageUserSave(response.data.user);
+
+    } catch(error){
+      setIsLoading(false);
+      Alert.alert('Erro', 'Não foi possível fazer login');
+      console.log(error);
+    } finally {
       setIsLoading(false);
     }
 
-    setIsLoading(false)
-  }, [response]);
+  }
 
   return (
     <Container>
@@ -63,9 +60,24 @@ export function Register() {
           size={64}
         />
 
+
+        <Input 
+          placeholder='E-mail'
+          keyboardType='email-address'
+          label='E-mail'
+          onChangeText={setEmail}
+        />
+
+        <Input 
+          placeholder='Senha'
+          secureTextEntry
+          label='Senha'
+          onChangeText={setPassword}
+        />
+
         <Button 
-          title='Entrar com Google'
-          onPress={handleGoogleSingIn}
+          title='ENTRAR'
+          onPress={handleSingIn}
           isLoading={isLoading}
         />
       </Content>

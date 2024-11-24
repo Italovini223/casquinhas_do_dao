@@ -1,8 +1,6 @@
 import { ReactNode, createContext, useEffect, useState } from "react";
-import { useQuery } from "../libs/realm";
-import { Admin } from "../libs/realm/schemas/admin";
 import { storageIsAdminGet, storageIsAdminRemove, storageIsAdminSave } from "../storage/storageIsAdmin";
-import { useUser } from "@realm/react";
+import { storageUserGet, userDataProps } from "../storage/storageUser";
 
 type isAdminContextProviderProps = {
   children: ReactNode;
@@ -18,11 +16,10 @@ export const IsAdminContext = createContext<isAdminContextDataProps>({} as isAdm
 
 export function IsAdminContextProvider({ children }: isAdminContextProviderProps){
   const [isAdmin, setIsAdmin] = useState(false);
-  const adminRequests = useQuery(Admin);
-  const user = useUser();
 
   async function saveIfIsAdmin(){
-    const admin = adminRequests.find(admin => admin.is_admin == true && admin.user_id == user.id);
+    const user: userDataProps = await storageUserGet();
+    const admin = user.isAdmin;
   
     if(admin){
       setIsAdmin(true);

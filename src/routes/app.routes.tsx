@@ -63,7 +63,7 @@ export function AppRoutes(){
         }}
       />
 
-      <Screen 
+      {/* <Screen 
         name="new"
         component={New}
         options={{
@@ -136,7 +136,7 @@ export function AppRoutes(){
             display: 'none'
           }
         }}
-      />
+      /> */}
     </Navigator>
   )
 }

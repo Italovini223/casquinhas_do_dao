@@ -65,7 +65,7 @@ export function AdminRoutes(){
         }}
       />
 
-      <Screen 
+      {/* <Screen 
         name="editOrder"
         component={EditOrder}
         options={{
@@ -153,7 +153,7 @@ export function AdminRoutes(){
             />
           )
         }}
-      />
+      /> */}
     </Navigator>
   )
 }

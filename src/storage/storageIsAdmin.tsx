@@ -1,5 +1,5 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { ADMIN_STORAGE } from "./storageConfig";
+import { ADMIN_STORAGE, } from "./config/storageConfig";
 
 export async function storageIsAdminSave(isAdmin: boolean){
   await AsyncStorage.setItem(ADMIN_STORAGE, JSON.stringify(isAdmin));
