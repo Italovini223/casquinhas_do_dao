@@ -1,3 +1,9 @@
+import { useState, useCallback } from 'react'
+
+import { useFocusEffect } from '@react-navigation/native'
+
+import { api } from '../../utils/api'
+
 import { Container, Content, OrderTitle, OrderStatus, DataInfo, Infos, UserInfo } from './styles'
 
 import { useNavigation } from '@react-navigation/native'
@@ -9,19 +15,20 @@ import { AdminNavigationRoutesProps } from '../../routes/admin.routes'
 
 export type OrderProps = {
   id: string;
-  product_name: string;
-  user_name: string;
-  its_paid: boolean;
-  created_at: string;
-  price: number;
-  status: string;
+  userId: string;
+  total: number;
+  isPaid: boolean;
+  createdAt: string;
+  updatedAt: string;
 }
 
 type Props = {
   data: OrderProps;
 }
 
-export function Order({  data:{ product_name, status, created_at, id, user_name }}: Props) {
+export function Order({  data:{ id, userId, isPaid, total, createdAt   }}: Props) {
+  const [userName, setUserName] = useState('');
+
   const { isAdmin } = useIsAdmin();
   
 
@@ -37,27 +44,41 @@ export function Order({  data:{ product_name, status, created_at, id, user_name 
     adminNavigation.navigate('editOrder', { id: id.toString() });
   }
 
+  async function handleUserName(){
+    try {
+      const response = await api.get(`/user/${userId}`);
+      setUserName(response.data.userName);
+    } catch(error){
+      console.log('Erro ao buscar o nome do usuário');
+    }
+  }
+
+
+  useFocusEffect(useCallback(() => {
+    isAdmin && handleUserName();
+  }, []));
+
 
 
   return (
     <Container onPress={isAdmin ? handleGoEditOrder : handleDetails}>
       <Content>
         <OrderTitle>
-          {product_name}
+          Pedido do dia { new Date(createdAt).toLocaleDateString() }
         </OrderTitle>
 
         <OrderStatus 
-          status={status}
+          status={isPaid ? 'finished' : 'pending'}
         />
       </Content>
       <Infos>
         <DataInfo>
-          { created_at }
+          { createdAt }
         </DataInfo>
         {
           isAdmin &&
           <UserInfo>
-            por:  { user_name }
+            por:  { userName }
           </UserInfo>
         }
       </Infos>

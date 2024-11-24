@@ -1,5 +1,7 @@
 import { useEffect, useState, useCallback } from 'react'
 
+import { api } from '../../utils/api'
+
 import { useFocusEffect } from '@react-navigation/native'
 
 import { FlatList } from 'react-native'
@@ -10,9 +12,11 @@ import { useIsAdmin } from '../../hooks/useIsAdmin'
 
 
 import { HomeHeader } from '../../components/HomeHeader'
-import { Order as OrderComponent, OrderProps } from '../../components/Order'
+import { Order, Order as OrderComponent, OrderProps } from '../../components/Order'
 import { Container, Content } from './styles'
 import { Alert } from 'react-native'
+
+
 
 export function Home() {
   const [userOrders, setUserOrders] = useState<OrderProps[]>([])
@@ -23,51 +27,21 @@ export function Home() {
   const title = isAdmin ? 'Todos os pedidos' : 'Meus pedidos';
 
 
-  // function fetchOrder(){
-  //   try {
-  //     let response;
-
-  //     if(isAdmin){
-  //       response = orders
-  //     } else {
-  //       response = orders.filtered(`user_id = '${user.id}' SORT(created_at DESC)`);
-  //     }
-
-  //     const formattedOrder = response.map(item => {
-  //       return({
-  //         id: item._id,
-  //         status: item.order_status,
-  //         user_name: item.user_name,
-  //         its_paid: item.its_paid,
-  //         created_at: dayjs(item.created_at).format('DD/MM/YYYY [as] HH:mm'),
-  //         price: item.total_price,
-  //         product_name: item.product_name,
-  //         quantity: item.product_quantity,
-  //       })
-  //     })
-
-  //     setUserOrders(formattedOrder);
-
-  //   } catch(error){
-  //     Alert.alert('PEDIDOS', 'Erro ao carregas os pedidos');
-  //   }
-  // }
+  async function fetchOrder(){
+    try {
+      const response = await api.get('/orders');
+      setUserOrders(response.data.orders);
+    } catch(error){
+      Alert.alert('ERRO', 'Erro ao carregar os pedidos');
+    }
+  }
 
 
-  // useFocusEffect(useCallback(() => {
+  useFocusEffect(useCallback(() => {
 
-  //   fetchOrder();
-  // }, []));
+    fetchOrder();
+  }, []));
 
-  // useEffect(() => {
-  //   realm.addListener('change', () => fetchOrder());
-
-  //   return () => {
-  //     if(realm && !realm.isClosed){
-  //       realm.removeListener('change', fetchOrder);
-  //     }
-  //   }
-  // });
 
   return (
     <Container>

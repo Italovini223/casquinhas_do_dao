@@ -11,6 +11,10 @@ export type userDataProps = {
 }
 
 export async function storageUserSave(user: userDataProps){
+  const userExists = await AsyncStorage.getItem(USER_STORAGE);
+  if(userExists){
+    await AsyncStorage.removeItem(USER_STORAGE);
+  }
   await AsyncStorage.setItem(USER_STORAGE, JSON.stringify(user));
 }
 
