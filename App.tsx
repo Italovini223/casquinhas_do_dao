@@ -8,12 +8,10 @@ import { StatusBar } from 'react-native';
 
 import { Roboto_400Regular, Roboto_700Bold, useFonts } from '@expo-google-fonts/roboto'
 
-import { AppProvider, UserProvider } from '@realm/react';
 
 import { ThemeProvider } from 'styled-components'
 import {  SafeAreaProvider } from 'react-native-safe-area-context'
 
-import { RealmProvider } from './src/libs/realm'
 
 import { Register } from "./src/screens/Register"
 
@@ -34,7 +32,6 @@ export default function App() {
     )
   }
   return (
-    <AppProvider id={REALM_APP_ID}>
       <SafeAreaProvider>
         <ThemeProvider theme={theme}>
           <StatusBar  
@@ -42,16 +39,13 @@ export default function App() {
             backgroundColor='transparent'
             translucent
           />
-          <UserProvider fallback={Register}>
-            <RealmProvider>
-              <IsAdminContextProvider>
-                <Routes />
-              </IsAdminContextProvider>
-            </RealmProvider>
-          </UserProvider>
+
+          <IsAdminContextProvider>
+            <Routes />
+          </IsAdminContextProvider>
+   
         </ThemeProvider>
       </SafeAreaProvider>
-    </AppProvider>
   );
 }
 
