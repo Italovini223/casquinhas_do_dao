@@ -1,27 +1,21 @@
+import { useCallback, useEffect, useState } from 'react';
 import { FlatList, Alert } from 'react-native';
-import { BSON } from 'realm';
-import { useQuery } from '../../libs/realm';
-import { Product } from '../../libs/realm/schemas/product';
-import { useRealm } from '../../libs/realm';
+import { useFocusEffect } from '@react-navigation/native';
+import { api } from '../../utils/api';
+
+import { productsDataProps } from '../New';
+
 import { ProductCard } from '../../components/ProductCard';
 import { Header } from '../../components/Header';
 import { Container, Content, EmptyList, EmptyListText } from './styles';
 
 export function Products() {
-  const products = useQuery(Product);
-  const realm = useRealm();
+  const [products, setProducts] = useState<productsDataProps[]>([]);
 
   async function handleDeleteProduct(id: string) {
     try {
-      const product = realm.objectForPrimaryKey(Product, new BSON.UUID(id));
-      if (product) {
-        realm.write(() => {
-          realm.delete(product);
-        });
-        Alert.alert('Produto deletado', 'Produto deletado com sucesso');
-      } else {
-        Alert.alert('Erro ao deletar produto', 'Produto não encontrado');
-      }
+      await api.delete(`/product/${id}`);    
+      Alert.alert('Produto deletado', 'Produto deletado com sucesso');
     } catch (error) {
       Alert.alert('Erro ao deletar produto', 'Erro ao deletar produto, tente novamente');
       console.log(error);
@@ -47,6 +41,19 @@ export function Products() {
     );
   }
 
+  useFocusEffect(useCallback(() =>{
+
+    async function fetchProducts() {
+      try {
+        const response = await api.get('/product');
+        setProducts(response.data.products);
+      } catch (error) {
+        Alert.alert('ERRO', 'Erro ao carregar os produtos');
+      }
+    }
+    fetchProducts();
+  }, []))
+
   return (
     <Container>
       <Header title="Produtos" />
@@ -55,11 +62,11 @@ export function Products() {
           <Content>
             <FlatList
               data={products}
-              keyExtractor={item => item._id.toString()}
+              keyExtractor={item => item.id.toString()}
               renderItem={({ item }) => (
                 <ProductCard 
                   data={item} 
-                  deleteButtonFunction={() => DeleteProduct(item._id.toString())}
+                  deleteButtonFunction={() => DeleteProduct(item.id.toString())}
                 />
               )}
             />

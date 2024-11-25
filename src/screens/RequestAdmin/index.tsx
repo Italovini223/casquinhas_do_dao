@@ -6,31 +6,23 @@ import { Header } from '../../components/Header'
 
 import { SuitcaseSimple } from 'phosphor-react-native'
 
-import { useUser } from '@realm/react'
+import { api } from '../../utils/api'
 
 import { useTheme } from 'styled-components/native'
-import { useRealm, useQuery } from '../../libs/realm'
 
 
 import { Container, Content } from './styles'
 import { Button } from '../../components/Button';
 import { Alert } from 'react-native'
-import { Admin } from '../../libs/realm/schemas/admin'
 
 export function RequestAdmin() {
   const [isLoading, setIsLoading] = useState(false);
-  const [userRequest, setUserRequest] = useState<Admin | null>(null);
 
   const { COLORS } = useTheme();
-  const user = useUser();
-  const realm = useRealm();
-  const requests = useQuery(Admin)
-
 
 
   function handleUserRequests(){
-    const request = requests.filtered(`user_id = '${user.id}'`)[0];
-    setUserRequest(request);
+    console.log('handleUserRequests');
   }
 
   useFocusEffect(useCallback(() => {
@@ -39,20 +31,8 @@ export function RequestAdmin() {
 
   function handleRequestAdmin(){
     try {
-      setIsLoading(true);
-
-      if(userRequest){
-        return Alert.alert("Administrador", 'Você tem requisições em andamento, favor aguardar resposta')
-      }
-
-      realm.write(() => {
-        realm.create('Admin', Admin.generate({
-          user_id: user!.id,
-          user_name: user.profile.name!,
-        }))
-      });
-
-      Alert.alert('Administrador', 'Requisição feita com sucesso, aguarde a autorização');
+      
+      console.log('handleRequestAdmin');
   
 
     }catch(error){

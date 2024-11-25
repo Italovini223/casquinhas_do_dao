@@ -6,14 +6,12 @@ import { Input } from '../../components/Input';
 
 import { Button } from "../../components/Button";
 
-import { useIsAdmin } from '../../hooks/useIsAdmin';
+import { api } from "../../utils/api";
 
 import { useNavigation } from "@react-navigation/native";
 import { AdminNavigationRoutesProps } from '../../routes/admin.routes'
 
 
-import { useRealm } from '../../libs/realm';
-import { Product } from '../../libs/realm/schemas/product';
 
 import { Alert } from "react-native";
 import { Header } from "../../components/Header";
@@ -28,9 +26,8 @@ export function NewProduct() {
 
   const adminNavigation = useNavigation<AdminNavigationRoutesProps>();  
 
-  const realm = useRealm();
 
-  function handleCreateProduct() {
+  async function handleCreateProduct() {
     try{
       setIsLoading(true);
 
@@ -38,13 +35,11 @@ export function NewProduct() {
         return Alert.alert('Novo Produto', 'Preencha todos os campos');
       }
   
-      realm.write(() => {
-        realm.create('Product', Product.generate({
-          name,
-          description,
-          price: Number(price),
-          quantity: Number(quantity),
-        }));
+      await api.post('/products', {
+        name,
+        price: Number(price),
+        quantity: Number(quantity),
+        description
       });
 
       Alert.alert('Novo Produto', 'Produto criado com sucesso');

@@ -12,8 +12,7 @@ import { House, Money, SignOut, IdentificationBadge, ListPlus, Package } from "p
 import { Loading } from "../components/Loading"
 import { Home } from "../screens/Home"
 import { EditOrder } from "../screens/EditOrder"
-import { ToPay } from "../screens/ToPay"
-import { AdminRequest } from "../screens/AdminRequest"
+import {  RequestAdmin } from "../screens/RequestAdmin"
 import { NewProduct } from "../screens/NewProduct"
 import { Products } from "../screens/Products"
 
