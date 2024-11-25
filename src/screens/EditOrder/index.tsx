@@ -1,25 +1,27 @@
-import { useState, useCallback, useEffect } from 'react'
+import { useState, useCallback } from 'react'
 
 import { useFocusEffect } from '@react-navigation/native'
 
 import { useRoute } from '@react-navigation/native'
 
-import { useObject } from '../../libs/realm'
+import { api } from '../../utils/api'
+
+import { orderDataProps } from '../Details'
+import { productsDataProps } from '../New'
+
 import { useTheme } from 'styled-components/native'
 
 import { useNavigation } from '@react-navigation/native'
 import { AdminNavigationRoutesProps } from '../../routes/admin.routes'
 
-import { useRealm  } from '../../libs/realm'
+
 
 import { CaretDown } from 'phosphor-react-native'
 
-import { BSON } from 'realm'
-
-import { Order } from '../../libs/realm/schemas/order'
-
-import { Header } from '../../components/Header'
 import { Container, Content, DefaultSelect, DefaultSelectText } from './styles'
+
+import { FlatList } from 'react-native'
+import { Header } from '../../components/Header'
 import { Input } from '../../components/Input'
 import { Select } from '../../components/Select'
 import { Button } from '../../components/Button'
@@ -36,38 +38,34 @@ type RouteParams = {
   id: string;
 }
 
+
 export function EditOrder() {
   const [orderStatus, setOrderStatus] = useState('');
+  const [order, setOrder] = useState<orderDataProps>({} as orderDataProps);
+  const [products, setProducts] = useState<productsDataProps[]>([]);
   const [itsPaid, setItsPaid] = useState('');
   const [disable, setDisable] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
 
-  const realm = useRealm();
 
   const { COLORS } = useTheme();
 
   const routes = useRoute();
   const { id } = routes.params as RouteParams;
 
-  const order = useObject(Order, new BSON.UUID(id) as unknown as string);
 
   const navigation = useNavigation<AdminNavigationRoutesProps>();
 
-  const total = `R$ ${order?.total_price.toString()},00`
 
-  function handleOderChanges(){
+  async function handleOderChanges(){
     try {
       setIsLoading(true);
 
-      if(!order){
-        return Alert.alert('Erro', 'Nao ha Pedido para ser modificado.')
-      }
+      await api.put(`/order`, {
+        id: order.id,
+        isPaid: itsPaid === 'Pago' ? true : false,
+      });
 
-      realm.write(() => {
-        order.its_paid = itsPaid === 'Pago' ? true : false,
-        order.order_status = orderStatus === 'em preparação' ? 'in preparation' : 'finished',
-        order.updated_at = new Date().toString()
-      })
 
       Alert.alert("Pedido", 'Pedido atualizado com sucesso');
 
@@ -81,24 +79,20 @@ export function EditOrder() {
     }
   }
 
-
   useFocusEffect(useCallback(() => {
-    const status = order?.order_status === 'in preparation' ? 'em preparação' : 'Finalizado';
-    const itsPaid = order?.its_paid === false ? 'Aguardando pagamento' : 'Pago';
+    async function fetchOrder() {
+      const response = await api.get(`/order/${id}`);
+      setOrder(response.data.order);
 
-    setItsPaid(itsPaid);
-    setOrderStatus(status);
+      for(const product of response.data.order.products){
+        const response = await api.get(`/product/${product.productId}`);
+        setProducts(prevState => [...prevState, response.data.product]);
+      }
+    }
 
-  }, [order]));
+    fetchOrder();
+  }, []));
 
-  useEffect(() => {
-    const checkOrderStatus = orderStatus === 'em preparação' ? 'in preparation' : 'finished'
-    const checkItsPaid = itsPaid === 'Pago' ? true : false;
-
-    const haveChanged = order?.order_status !== checkOrderStatus || order?.its_paid !== checkItsPaid;
-
-    setDisable(!haveChanged);
-  }, [orderStatus, itsPaid]);
 
   
   return (
@@ -106,61 +100,47 @@ export function EditOrder() {
       <Header title='Editar pedido'/>
 
       <Content>
-        <Input 
-          label='Produto'
-          value={order?.product_name}
-          editable={false}
+        <FlatList 
+          data={order.products}
+          keyExtractor={item => item.id}
+          renderItem={({ item }) => (
+            <>
+              {
+                products.forEach(product => {
+                  product.id === item.productId &&
+                  <Input 
+                  label='Produto'
+                  value={product.name}
+                  editable={false}
+                  />
+                })
+              }
+
+              <Input 
+                label='Quantidade'
+                value={item.quantity.toString()}
+                editable={false}
+              />
+            
+            </>
+          )}
         />
 
-        <Input 
-          label='Quantidade'
-          value={order?.product_quantity.toString()}
-          editable={false}
-        />
+
+
 
         <Input 
           label='Total'
-          value={total}
+          value={order.total.toString()}
           editable={false}
         />
 
-        <Input 
+        {/* <Input 
           label='Pedido por'
           value={order?.user_name}
           editable={false}
-        />
+        /> */}
 
-        <Select 
-          label='Status do pedido'
-          data={orderStatusValues}
-          onSelect={(orderStatusValue: OrderStatusValuesPros) => {
-            setOrderStatus(orderStatusValue);
-          }}
-          buttonTextAfterSelection={(orderStatusValue: OrderStatusValuesPros) => {
-            return orderStatusValue
-          }}
-          rowTextForSelection={(orderStatusValue: OrderStatusValuesPros) => {
-            return orderStatusValue
-          }}
-          renderCustomizedButtonChild={() => {
-            return (
-              <DefaultSelect>
-                <CaretDown 
-                  color={COLORS.BRAND_LIGHT}
-                  style={{
-                  position: 'absolute',
-                  left: 4,
-                }}
-                />
-                <DefaultSelectText>
-                  {
-                    orderStatus
-                  }
-                </DefaultSelectText>
-              </DefaultSelect>
-            )
-          }}
-        />
 
         <Select 
           label='Status do pagamento'

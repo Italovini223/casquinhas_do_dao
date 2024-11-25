@@ -10,7 +10,7 @@ import { Container, Content, Status, Label, Price, Product, Quantity } from './s
 import { Header } from '../../components/Header';
 import { FlatList } from 'react-native';
 
-type orderDataProps = {
+export type orderDataProps = {
   id: string;
   userId: string;
   total: number;

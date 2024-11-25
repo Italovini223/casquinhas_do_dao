@@ -1,16 +1,19 @@
 import { useState, useCallback } from 'react';
 import { useFocusEffect } from '@react-navigation/native';
 import { api } from '../../utils/api';
+
 import { ButtonContainer, Container, Content, DefaultSelect, DefaultSelectText, TotalPrice, TotalPriceContent } from './styles';
 import { storageUserGet } from '../../storage/storageUser';
+
 import { useTheme } from 'styled-components/native';
 import { CaretDown } from 'phosphor-react-native';
+
 import { Header } from '../../components/Header';
 import { Input } from '../../components/Input';
 import { Select } from '../../components/Select';
 import { Button } from '../../components/Button';
+
 import { Alert } from 'react-native';
-import { Order } from '../../libs/realm/schemas/order';
 
 type newOrderProductDataProps = {
   productId: string;
@@ -18,7 +21,7 @@ type newOrderProductDataProps = {
   price: number;
 }
 
-type productsDataProps = {
+export type productsDataProps = {
   id: string;
   name: string;
   description: string;
