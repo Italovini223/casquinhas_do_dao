@@ -30,7 +30,7 @@ export function AuthContextProvider({children}:AuthContextProviderProps){
 
       api.defaults.headers.common['Authorization'] = `Bearer ${token}`
       await storageUserSave(userData)
-      await storageAuthTokenSave({token})
+      await storageAuthTokenSave({ token })
 
       setUser(userData)
     } catch (error) {
@@ -68,11 +68,15 @@ export function AuthContextProvider({children}:AuthContextProviderProps){
   async function loadUserData(){
     try {
       const userLogged = await storageUserGet()
-      const {token} = await storageAuthTokenGet()
+      const { token } = await storageAuthTokenGet()
+
+      console.log("TOKEN =>", token)
   
-      if(token && userLogged){
-        await userAndTokenUpdate(userLogged, token)
-        setIsLoadingUserData(false)
+      if(token && userLogged.id){
+        api.defaults.headers.common['Authorization'] = `Bearer ${token}`
+        setUser(userLogged)
+        console.log("LOGGED =>", userLogged)
+        console.log("USER =>", user)
       }
     } catch (error){
       throw error
@@ -92,8 +96,12 @@ export function AuthContextProvider({children}:AuthContextProviderProps){
 
 
   useEffect(() => {
-    loadUserData()
+    async function loadData(){
+     await loadUserData()
+    }
+    loadData()
   }, [])
+
 
   return (
     <AuthContext.Provider

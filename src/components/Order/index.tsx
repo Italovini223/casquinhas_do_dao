@@ -4,6 +4,8 @@ import { useFocusEffect } from '@react-navigation/native'
 
 import { api } from '../../utils/api'
 
+import dayjs from 'dayjs'
+
 import { Container, Content, OrderTitle, OrderStatus, DataInfo, Infos, UserInfo } from './styles'
 
 import { useNavigation } from '@react-navigation/native'
@@ -73,7 +75,7 @@ export function Order({  data:{ id, userId, isPaid, total, createdAt   }}: Props
       </Content>
       <Infos>
         <DataInfo>
-          { createdAt }
+          { dayjs(createdAt).format('HH:mm') }
         </DataInfo>
         {
           isAdmin &&

@@ -20,6 +20,7 @@ export function Routes() {
     return <Loading />
   }
 
+  console.log(user);
 
 
   return (

@@ -6,9 +6,9 @@ import { useFocusEffect } from '@react-navigation/native'
 
 import { FlatList } from 'react-native'
 
-import dayjs from 'dayjs'
 
 import { useIsAdmin } from '../../hooks/useIsAdmin'
+import { useAuth } from '../../hooks/useAuth'
 
 
 import { HomeHeader } from '../../components/HomeHeader'
@@ -20,18 +20,24 @@ import { Alert } from 'react-native'
 
 export function Home() {
   const [userOrders, setUserOrders] = useState<OrderProps[]>([])
-  const { isAdmin } = useIsAdmin();
+  const { user } = useAuth();
 
 
 
-  const title = isAdmin ? 'Todos os pedidos' : 'Meus pedidos';
+  const title = user.isAdmin ? 'Todos os pedidos' : 'Meus pedidos';
 
 
   async function fetchOrder(){
     try {
       const response = await api.get('/order');
-      setUserOrders(response.data.orders);
-      console.log(response);
+
+      if(!user.isAdmin){
+        const filteredOrders = response.data.orders.filter((order: OrderProps) => order.userId === user.id);
+        setUserOrders(filteredOrders);
+      
+      } else {
+        setUserOrders(response.data.orders);
+      }
     } catch(error){
       Alert.alert('ERRO', 'Erro ao carregar os pedidos');
       console.log(error);
