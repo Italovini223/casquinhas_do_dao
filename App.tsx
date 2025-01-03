@@ -12,6 +12,8 @@ import { Roboto_400Regular, Roboto_700Bold, useFonts } from '@expo-google-fonts/
 import { ThemeProvider } from 'styled-components'
 import {  SafeAreaProvider } from 'react-native-safe-area-context'
 
+import { AuthContextProvider } from './src/contexts/AuthContext';
+
 
 import { Register } from "./src/screens/Register"
 
@@ -40,9 +42,12 @@ export default function App() {
             translucent
           />
 
-          <IsAdminContextProvider>
-            <Routes />
-          </IsAdminContextProvider>
+          <AuthContextProvider>
+            <IsAdminContextProvider>
+              <Routes />
+            </IsAdminContextProvider>
+          </AuthContextProvider>
+
    
         </ThemeProvider>
       </SafeAreaProvider>

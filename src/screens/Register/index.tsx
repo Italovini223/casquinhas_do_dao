@@ -2,9 +2,9 @@ import { useState, useContext } from 'react'
 
 import { IceCream } from 'phosphor-react-native'
 
-import { api } from '../../utils/api'
+import { useAuth } from '../../hooks/useAuth'
 
-import { storageUserSave } from '../../storage/storageUser'
+
 import { IsAdminContext } from '../../contexts/isAdmin'
 import { useTheme } from 'styled-components/native'
 
@@ -22,7 +22,7 @@ export function Register() {
   const [password, setPassword] = useState('');
 
   const { COLORS } = useTheme()
-  const { saveIfIsAdmin } = useContext(IsAdminContext)
+  const { singIn } = useAuth()
 
 
   async function handleSingIn(){
@@ -33,14 +33,8 @@ export function Register() {
         return Alert.alert('Erro', 'Preencha todos os campos');
       }
 
-      const response = await api.post('/section', {
-        email,
-        password
-      });
-
-      setIsLoading(false);
-      console.log(response.data.user);
-      await storageUserSave(response.data.user);
+      await singIn(email, password);
+      
 
     } catch(error){
       setIsLoading(false);

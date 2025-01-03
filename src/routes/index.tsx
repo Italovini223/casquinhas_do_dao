@@ -1,33 +1,31 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { DefaultTheme, NavigationContainer } from '@react-navigation/native';
-import { AppRoutes } from './app.routes';
-import { AdminRoutes } from './admin.routes';
+
+import { useAuth } from '../hooks/useAuth';
+
 import { SingInRoutes } from './singIn.routes';
-import { storageUserGet, userDataProps } from '../storage/storageUser';
-import { useIsAdmin } from '../hooks/useIsAdmin';
+
 import { useTheme } from 'styled-components/native';
+import { Loading } from '../components/Loading';
+import { AdminRoutes } from './admin.routes';
+import { AppRoutes } from './app.routes';
 
 export function Routes() {
+  const { user, isLoadingUserData} = useAuth();
   const { COLORS } = useTheme();
-  const { isAdmin } = useIsAdmin();
-  const [user, setUser] = useState<userDataProps | null>(null);
-
-  useEffect(() => {
-    async function loadUser() {
-      const userData = await storageUserGet();
-      setUser(userData);
-    }
-
-    loadUser();
-  }, []);
-
   const theme = DefaultTheme;
   theme.colors.background = COLORS.GRAY_800;
+
+  if(isLoadingUserData){
+    return <Loading />
+  }
+
+
 
   return (
     <NavigationContainer theme={theme}>
       {
-        user ?  <SingInRoutes /> : isAdmin ? <AdminRoutes /> : <AppRoutes />
+        user?.id ? user?.isAdmin ? <AdminRoutes /> : <AppRoutes /> : <SingInRoutes /> 
       }
     </NavigationContainer>
   );

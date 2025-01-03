@@ -29,10 +29,12 @@ export function Home() {
 
   async function fetchOrder(){
     try {
-      const response = await api.get('/orders');
+      const response = await api.get('/order');
       setUserOrders(response.data.orders);
+      console.log(response);
     } catch(error){
       Alert.alert('ERRO', 'Erro ao carregar os pedidos');
+      console.log(error);
     }
   }
 

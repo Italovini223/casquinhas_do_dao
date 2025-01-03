@@ -1,10 +1,12 @@
 import { Alert, TouchableOpacity } from 'react-native'
 
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
-import Avatar from 'react-avatar'
+import { Avatar } from 'react-native-elements'
 
-import { useUser } from '@realm/react'
-import { useIsAdmin } from '../../hooks/useIsAdmin'
+import { useAuth } from '../../hooks/useAuth'
+
+import { useTheme } from 'styled-components/native'
+
 
 import { useNavigation } from '@react-navigation/native'
 import { AppNavigatorRoutesProps } from '../../routes/app.routes'
@@ -17,13 +19,14 @@ type Props = {
 }
 
 export function HomeHeader({ title }: Props) {
-  const user = useUser();
+  const { user } = useAuth();
   const insets = useSafeAreaInsets();
+  const { COLORS } = useTheme();
   const navigation = useNavigation<AppNavigatorRoutesProps>();
-  const { isAdmin } = useIsAdmin();
+  
 
   function handleGoRequestAdmin(){
-    if(isAdmin) {
+    if(user!.isAdmin) {
       return Alert.alert('Administrador', 'Você já é um administrador');
     } else {
       navigation.navigate('requestAdmin');
@@ -36,12 +39,14 @@ export function HomeHeader({ title }: Props) {
     <Container style={{ paddingTop }}>
 
       <TouchableOpacity onPress={handleGoRequestAdmin}>
-        <Avatar
-          size="54"
-          name={user.name}
-          round={true}
-          textSizeRatio={2}
-          style={{ marginRight: 10 }}
+      <Avatar
+          size={64}
+          rounded
+          title={user!.name[0]}
+          containerStyle={{ 
+            backgroundColor: COLORS.GRAY_500,
+            
+          }}
         />
         
       </TouchableOpacity>
