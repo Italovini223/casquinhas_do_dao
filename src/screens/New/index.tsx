@@ -1,47 +1,37 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { useFocusEffect } from '@react-navigation/native';
 import { api } from '../../utils/api';
 
 import { ButtonContainer, Container, Content, DefaultSelect, DefaultSelectText, TotalPrice, TotalPriceContent } from './styles';
-import { storageUserGet } from '../../storage/storageUser';
+
+import { useAuth } from '../../hooks/useAuth';
 
 import { useTheme } from 'styled-components/native';
-import { CaretDown } from 'phosphor-react-native';
+
+import CounterInput from "react-native-counter-input";
+
+import { productDto } from '../../dtos/productDto';
+import { orderProductDto } from '../../dtos/orderProductDto';
 
 import { Header } from '../../components/Header';
-import { Input } from '../../components/Input';
-import { Select } from '../../components/Select';
 import { Button } from '../../components/Button';
 
-import { Alert } from 'react-native';
-
-type newOrderProductDataProps = {
-  productId: string;
-  quantity: number;
-  price: number;
-}
-
-export type productsDataProps = {
-  id: string;
-  name: string;
-  description: string;
-  price: number;
-  quantity: number;
-}
+import { Alert, FlatList } from 'react-native';
+import { OrderProductCard } from '../../components/OrderProductCard';
 
 export function New() {
-  const [selectedProducts, setSelectedProducts] = useState<productsDataProps[]>([]);
-  const [productsAvailable, setProductsAvailable] = useState<productsDataProps[]>([]);
-  const [title, setTitle] = useState('');
-  const [quantity, setQuantity] = useState<number>(0);
+  const [selectedProducts, setSelectedProducts] = useState<orderProductDto[]>([]);
+  const [productsAvailable, setProductsAvailable] = useState<productDto[]>([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [totalPrice, setTotalPrice] = useState(0);
 
   const { COLORS } = useTheme();
+  const { user } = useAuth();
 
   async function getAllAvailableProducts() {
     try {
-      const response = await api.get('/products');
-      const filteredProducts = response.data.products.filter((product: productsDataProps) => product.quantity > 0);
+      const response = await api.get('/product');
+      const filteredProducts = response.data.products.filter((product: productDto) => product.quantity > 0);
       setProductsAvailable(filteredProducts);
     } catch (error) {
       Alert.alert('ERRO', 'Erro ao carregar os produtos');
@@ -50,35 +40,53 @@ export function New() {
 
   async function handleOrderRegister() {
     try {
-      const user = await storageUserGet();
-      if (!title || !quantity || selectedProducts.length === 0) {
-        return Alert.alert('REGISTRO', 'Favor preencher todos os campos');
-      }
-
-      const products = selectedProducts.map(product => ({
-        productId: product.id,
-        quantity: product.quantity,
-        price: product.price
-      }));
-
-      const total = selectedProducts.reduce((acc, product) => acc + (product.price * product.quantity), 0);
 
       const newOrder = {
-        userId: user!.id,
-        total,
-        products,
+        userId: user.id,
+        total: totalPrice,
+        products: selectedProducts,
       };
 
-      await api.post('/orders', newOrder);
+      await api.post('/order', newOrder);
 
       Alert.alert('REGISTRO', 'Pedido realizado com sucesso');
     } catch (error) {
       setIsLoading(false);
       Alert.alert("Erro", 'Nao foi possível fazer o pedido!');
+      console.log(error);
     } finally {
       setIsLoading(false);
     }
   }
+
+  function handleSelectProduct(product: productDto) {
+    const isSelected = selectedProducts.some(selectedProduct => selectedProduct.productId === product.id);
+
+    const filteredSelectedProduct = {
+      productId: product.id,
+      quantity: 1,
+      price: product.price
+    }
+
+    if (isSelected) {
+      setSelectedProducts(selectedProducts.filter(selectedProduct => selectedProduct.productId !== product.id));
+    } else {
+      setSelectedProducts([...selectedProducts, filteredSelectedProduct]);
+    }
+  }
+
+  function handleUpdateProductQuantity(id: string, quantity: number) {
+    setSelectedProducts(prevSelectedProducts =>
+      prevSelectedProducts.map(product =>
+        product.productId === id ? { ...product, quantity } : product
+      )
+    );
+  }
+
+  useEffect(() => {
+    const newTotalPrice = selectedProducts.reduce((acc, product) => acc + (product.price * product.quantity), 0);
+    setTotalPrice(newTotalPrice);
+  }, [selectedProducts]);
 
   useFocusEffect(useCallback(() => {
     getAllAvailableProducts();
@@ -89,62 +97,36 @@ export function New() {
       <Header title='Novo pedido' />
 
       <Content>
-        <Input
-          label='Nome do pedido'
-          onChangeText={setTitle}
-        />
-
-        <Input
-          label='Quantidade (pc-10)'
-          keyboardType='numeric'
-          onChangeText={value => setQuantity(Number(value))}
-        />
-
-        <Select
-          label='Escolha o produto'
+        <FlatList 
           data={productsAvailable}
-          onSelect={(selectedProduct: productsDataProps) => {
-            setSelectedProducts([...selectedProducts, selectedProduct]);
-          }}
-          buttonTextAfterSelection={(selectedProduct: productsDataProps) => {
-            return selectedProduct.name;
-          }}
-          rowTextForSelection={(selectedProduct: productsDataProps) => {
-            return selectedProduct.name;
-          }}
-          renderCustomizedButtonChild={(selectedProduct) => {
-            return (
-              <DefaultSelect>
-                <CaretDown
-                  color={COLORS.BRAND_LIGHT}
-                  style={{
-                    position: 'absolute',
-                    left: 4,
-                  }}
+          keyExtractor={(item) => item.id}
+          renderItem={({ item }) => (
+            <OrderProductCard
+              product={item}
+              isSelected={selectedProducts.some(product => product.productId === item.id)}
+              children={
+                <CounterInput
+                  onChange={(quantity) => handleUpdateProductQuantity(item.id, quantity)}
+                  initial={1}
+                  horizontal
+                  min={1}
+                  max={item.quantity}
+                  style={{ backgroundColor: COLORS.BRAND_MID }}
+                  increaseButtonBackgroundColor={COLORS.GRAY_800}
+                  decreaseButtonBackgroundColor={COLORS.GRAY_800}
                 />
-                <DefaultSelectText>
-                  {selectedProduct ? selectedProduct.name : 'Escolha o produto'}
-                </DefaultSelectText>
-              </DefaultSelect>
-            );
-          }}
+              }
+              onPress={() => handleSelectProduct(item)}
+            />
+          )}
         />
-{/* 
-        <Input
-          label='Nome do usuário'
-          value={user.name}
-          editable={false}
-        /> */}
 
         <TotalPriceContent>
           <TotalPrice>
             Total R$
           </TotalPrice>
           <TotalPrice>
-            {quantity > 0 && selectedProducts.length > 0
-              ? String(quantity * selectedProducts.reduce((acc, product) => acc + product.price, 0))
-              : '00'
-            },00
+            {totalPrice.toFixed(2)}
           </TotalPrice>
         </TotalPriceContent>
       </Content>

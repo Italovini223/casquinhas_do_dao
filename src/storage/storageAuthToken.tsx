@@ -13,7 +13,7 @@ export async function storageAuthTokenSave({ token }: StorageAuthTokenPros){
 export async function storageAuthTokenGet(){
   const response = await AsyncStorage.getItem(USER_TOKEN_STORAGE)
 
-  const token: StorageAuthTokenPros = response ? JSON.parse(response) : {};
+  const {token}: StorageAuthTokenPros = response ? JSON.parse(response) : {};
 
   return { token  }
 }

@@ -3,6 +3,7 @@ import { createBottomTabNavigator, BottomTabNavigationProp } from "@react-naviga
 import { Platform } from "react-native"
 
 import { useApp } from "@realm/react"
+import { useAuth } from "../hooks/useAuth"
 
 import { House, IceCream, SignOut, Money } from "phosphor-react-native"
 
@@ -13,7 +14,6 @@ import { Loading } from "../components/Loading"
 import { New } from "../screens/New"
 import { Home } from "../screens/Home"
 import { useEffect } from "react"
-import { ToPay } from "../screens/ToPay"
 import { Details } from "../screens/Details"
 import { RequestAdmin } from "../screens/RequestAdmin"
 
@@ -32,6 +32,8 @@ const { Navigator, Screen } = createBottomTabNavigator<AppRoutes>();
 
 export function AppRoutes(){
   const { COLORS } = useTheme();
+  const { singOut } = useAuth()
+
   const iconSize = 26;
 
   return (
@@ -63,7 +65,7 @@ export function AppRoutes(){
         }}
       />
 
-      {/* <Screen 
+      <Screen 
         name="new"
         component={New}
         options={{
@@ -76,7 +78,7 @@ export function AppRoutes(){
         }}
       />
 
-      <Screen 
+      {/* <Screen 
         name="toPay"
         component={ToPay}
         options={{
@@ -87,17 +89,16 @@ export function AppRoutes(){
             />
           )
         }}
-      />
+      /> */}
 
 
       <Screen 
         name="singOut"
         component={() => {
-          const app = useApp();
 
           useEffect(() => {
             function handleLogout(){
-              app.currentUser?.logOut();
+             singOut()
             }
 
             handleLogout();
@@ -136,7 +137,7 @@ export function AppRoutes(){
             display: 'none'
           }
         }}
-      /> */}
+      />
     </Navigator>
   )
 }

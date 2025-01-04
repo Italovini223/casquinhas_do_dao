@@ -65,6 +65,8 @@ export function AuthContextProvider({children}:AuthContextProviderProps){
     }
   }
 
+
+
   async function loadUserData(){
     try {
       const userLogged = await storageUserGet()
@@ -89,6 +91,7 @@ export function AuthContextProvider({children}:AuthContextProviderProps){
     try {
       setUser({} as userDto)
       await storageUserRemove()
+
     } catch(error){
       throw error
     }

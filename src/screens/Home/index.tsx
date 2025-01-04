@@ -62,6 +62,7 @@ export function Home() {
             <OrderComponent 
               data={item}
               key={item.id}
+              
             />
           )}
         />
