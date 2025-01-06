@@ -42,7 +42,7 @@ export function ProductCard({ data: { name, description, price, quantity, id  },
       </TrashBtn>
       <Name>{name}</Name>
       <Price>R$ {price.toFixed(2)}</Price>
-      <Quantity>Quantidade: {quantity} UN </Quantity>
+      <Quantity>Quantidade: {quantity} PC-10 </Quantity>
     </Container>
   );
 }

@@ -1,6 +1,10 @@
 import { useCallback, useEffect, useState } from 'react';
 import { FlatList, Alert } from 'react-native';
-import { useFocusEffect } from '@react-navigation/native';
+
+import { useFocusEffect, useNavigation } from '@react-navigation/native';
+import { AdminNavigationRoutesProps } from '../../routes/admin.routes';
+
+
 import { api } from '../../utils/api';
 
 import { productDto } from '../../dtos/productDto';
@@ -16,10 +20,13 @@ export function Products() {
   const [products, setProducts] = useState<productDto[]>([]);
   const [isLoading, setIsLoading] = useState(false);
 
+  const navigation = useNavigation<AdminNavigationRoutesProps>();
+
   async function handleDeleteProduct(id: string) {
     try {
       await api.delete(`/product/${id}`);    
       Alert.alert('Produto deletado', 'Produto deletado com sucesso');
+      navigation.navigate('home');
     } catch (error) {
       Alert.alert('Erro ao deletar produto', 'Erro ao deletar produto, tente novamente');
       console.log(error);
@@ -62,7 +69,9 @@ export function Products() {
   }, []))
 
   if(isLoading){
-
+    return (
+      <Loading />
+    )
   }
 
   return (
