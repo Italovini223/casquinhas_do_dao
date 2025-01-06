@@ -26,7 +26,7 @@ export function HomeHeader({ title }: Props) {
   
 
   function handleGoRequestAdmin(){
-    if(user!.isAdmin) {
+    if(user.isAdmin) {
       return Alert.alert('Administrador', 'Você já é um administrador');
     } else {
       navigation.navigate('requestAdmin');

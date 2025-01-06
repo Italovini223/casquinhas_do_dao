@@ -35,7 +35,7 @@ export function NewProduct() {
         return Alert.alert('Novo Produto', 'Preencha todos os campos');
       }
   
-      await api.post('/products', {
+      await api.post('/product', {
         name,
         price: Number(price),
         quantity: Number(quantity),

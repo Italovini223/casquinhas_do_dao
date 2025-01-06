@@ -6,10 +6,11 @@ import { useRoute } from '@react-navigation/native'
 
 import { api } from '../../utils/api'
 
-import { orderDataProps } from '../Details'
-import { productsDataProps } from '../New'
+import { orderDto } from '../../dtos/orderDto'
+import { productDto } from '../../dtos/productDto'
 
 import { useTheme } from 'styled-components/native'
+
 
 import { useNavigation } from '@react-navigation/native'
 import { AdminNavigationRoutesProps } from '../../routes/admin.routes'
@@ -26,6 +27,8 @@ import { Input } from '../../components/Input'
 import { Select } from '../../components/Select'
 import { Button } from '../../components/Button'
 import { Alert } from 'react-native'
+import { Loading } from '../../components/Loading'
+import { EditProductCard } from '../../components/EditProductCard'
 
 const itsPaidValues = ['Pago', 'Aguardando pagamento'];
 const orderStatusValues = ['em preparação', 'finalizado'];
@@ -41,8 +44,8 @@ type RouteParams = {
 
 export function EditOrder() {
   const [orderStatus, setOrderStatus] = useState('');
-  const [order, setOrder] = useState<orderDataProps>({} as orderDataProps);
-  const [products, setProducts] = useState<productsDataProps[]>([]);
+  const [order, setOrder] = useState<orderDto>({} as orderDto);
+  const [products, setProducts] = useState<productDto[]>([]);
   const [itsPaid, setItsPaid] = useState('');
   const [disable, setDisable] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
@@ -61,7 +64,7 @@ export function EditOrder() {
     try {
       setIsLoading(true);
 
-      await api.put(`/order`, {
+      await api.patch(`/order`, {
         id: order.id,
         isPaid: itsPaid === 'Pago' ? true : false,
       });
@@ -79,22 +82,39 @@ export function EditOrder() {
     }
   }
 
-  useFocusEffect(useCallback(() => {
-    async function fetchOrder() {
+  async function fetchOrder() {
+    try {
+      setIsLoading(true);
+
       const response = await api.get(`/order/${id}`);
       setOrder(response.data.order);
-
+  
       for(const product of response.data.order.products){
         const response = await api.get(`/product/${product.productId}`);
         setProducts(prevState => [...prevState, response.data.product]);
       }
+    } catch {
+      Alert.alert('Erro', 'Não foi possível buscar o pedido');
+      navigation.goBack();
+    }  finally {
+      setIsLoading(false);
     }
 
+
+  }
+
+  useFocusEffect(useCallback(() => {
     fetchOrder();
-  }, []));
+  }, [id]));
 
 
-  
+  if(isLoading){
+    return (
+      <Loading />
+    )
+  }
+
+
   return (
     <Container>
       <Header title='Editar pedido'/>
@@ -102,51 +122,25 @@ export function EditOrder() {
       <Content>
         <FlatList 
           data={order.products}
-          keyExtractor={item => item.id}
+          keyExtractor={item => item.id!}
           renderItem={({ item }) => (
-            <>
-              {
-                products.forEach(product => {
-                  product.id === item.productId &&
-                  <Input 
-                  label='Produto'
-                  value={product.name}
-                  editable={false}
-                  />
-                })
-              }
-
-              <Input 
-                label='Quantidade'
-                value={item.quantity.toString()}
-                editable={false}
-              />
-            
-            </>
+            <EditProductCard data={item} />
           )}
+          
         />
-
-
-
 
         <Input 
           label='Total'
-          value={order.total.toString()}
+          value={`${order.total},00`}
           editable={false}
         />
-
-        {/* <Input 
-          label='Pedido por'
-          value={order?.user_name}
-          editable={false}
-        /> */}
-
 
         <Select 
           label='Status do pagamento'
           data={itsPaidValues}
           onSelect={(itsPaidStatus: itsPaidValuesProps) => {
             setItsPaid(itsPaidStatus);
+            setDisable(false);
           }}
           buttonTextAfterSelection={(itsPaidStatus: itsPaidValuesProps) => {
             return itsPaidStatus

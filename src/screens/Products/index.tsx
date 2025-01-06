@@ -3,14 +3,18 @@ import { FlatList, Alert } from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
 import { api } from '../../utils/api';
 
-import { productsDataProps } from '../New';
+import { productDto } from '../../dtos/productDto';
 
 import { ProductCard } from '../../components/ProductCard';
 import { Header } from '../../components/Header';
+import { Loading } from '../../components/Loading';
+
+
 import { Container, Content, EmptyList, EmptyListText } from './styles';
 
 export function Products() {
-  const [products, setProducts] = useState<productsDataProps[]>([]);
+  const [products, setProducts] = useState<productDto[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
 
   async function handleDeleteProduct(id: string) {
     try {
@@ -45,14 +49,21 @@ export function Products() {
 
     async function fetchProducts() {
       try {
+        setIsLoading(true);
         const response = await api.get('/product');
         setProducts(response.data.products);
       } catch (error) {
         Alert.alert('ERRO', 'Erro ao carregar os produtos');
+      } finally {
+        setIsLoading(false);
       }
     }
     fetchProducts();
   }, []))
+
+  if(isLoading){
+
+  }
 
   return (
     <Container>

@@ -1,6 +1,9 @@
 import { TouchableOpacityProps } from 'react-native';
 import { Trash } from 'phosphor-react-native';
 import { useTheme } from 'styled-components/native';
+import { useNavigation } from '@react-navigation/native';
+import { AdminNavigationRoutesProps } from '../../routes/admin.routes';
+
 import { Container, Name, Price, Quantity, TrashBtn } from './styles';
 
 
@@ -9,6 +12,7 @@ type data = {
   description?: string,
   price: number,
   quantity: number,
+  id: string,
 }
 
 type ProductCardProps = TouchableOpacityProps & {
@@ -16,13 +20,20 @@ type ProductCardProps = TouchableOpacityProps & {
  deleteButtonFunction: () => void;
 
 }
-export function ProductCard({ data: { name, description, price, quantity }, deleteButtonFunction, ...rest }: ProductCardProps) {
+export function ProductCard({ data: { name, description, price, quantity, id  }, deleteButtonFunction, ...rest }: ProductCardProps) {
   const { COLORS } = useTheme();
+  const navigation = useNavigation<AdminNavigationRoutesProps>();
+
+  function handleGoProductDetails(){
+    navigation.navigate('productDetails', { id });
+  }
+
   return (
     <Container 
       {...rest}
       isAvalible={quantity > 0}
       disabled={quantity <= 0}
+      onPress={handleGoProductDetails}
     >
       <TrashBtn 
         onPress={deleteButtonFunction}

@@ -6,33 +6,28 @@ import { api } from '../../utils/api'
 
 import dayjs from 'dayjs'
 
+import { useAuth } from '../../hooks/useAuth'
+
+import { orderDto } from '../../dtos/orderDto'
+
 import { Container, Content, OrderTitle, OrderStatus, DataInfo, Infos, UserInfo } from './styles'
 
 import { useNavigation } from '@react-navigation/native'
 
-import { useIsAdmin } from '../../hooks/useIsAdmin'
 
 import { AppNavigatorRoutesProps } from '../../routes/app.routes'
 import { AdminNavigationRoutesProps } from '../../routes/admin.routes'
 
-export type OrderProps = {
-  id: string;
-  userId: string;
-  total: number;
-  isPaid: boolean;
-  createdAt: string;
-  updatedAt: string;
-}
+
 
 type Props = {
-  data: OrderProps;
+  data: orderDto;
 }
 
 export function Order({  data:{ id, userId, isPaid, total, createdAt   }}: Props) {
   const [userName, setUserName] = useState('');
 
-  const { isAdmin } = useIsAdmin();
-  
+ const { user } = useAuth();  
 
   const appNavigation = useNavigation<AppNavigatorRoutesProps>();
   const adminNavigation = useNavigation<AdminNavigationRoutesProps>();
@@ -57,13 +52,13 @@ export function Order({  data:{ id, userId, isPaid, total, createdAt   }}: Props
 
 
   useFocusEffect(useCallback(() => {
-    isAdmin && handleUserName();
+    user.isAdmin && handleUserName();
   }, []));
 
 
 
   return (
-    <Container onPress={isAdmin ? handleGoEditOrder : handleDetails}>
+    <Container onPress={user.isAdmin ? handleGoEditOrder : handleDetails}>
       <Content>
         <OrderTitle>
           Pedido do dia { new Date(createdAt).toLocaleDateString() }
@@ -78,7 +73,7 @@ export function Order({  data:{ id, userId, isPaid, total, createdAt   }}: Props
           { dayjs(createdAt).format('HH:mm') }
         </DataInfo>
         {
-          isAdmin &&
+          user.isAdmin &&
           <UserInfo>
             por:  { userName }
           </UserInfo>

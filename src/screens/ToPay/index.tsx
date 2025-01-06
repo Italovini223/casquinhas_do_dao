@@ -36,10 +36,14 @@ export function ToPay(){
       const { data } = await api.get('/order');
 
       let filteredResponse;
-
-      if(!user.isAdmin){
+      
+      if (!user.isAdmin) {
         filteredResponse = data.orders.filter((item: orderDto) => (
-          item.userId = user.id
+          item.userId === user.id && item.isPaid === false
+        ));
+      } else {
+        filteredResponse = data.orders.filter((item: orderDto) => (
+          item.isPaid === false
         ));
       }
       

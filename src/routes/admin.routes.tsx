@@ -3,18 +3,19 @@ import { Platform } from "react-native"
 import { createBottomTabNavigator, BottomTabNavigationProp } from "@react-navigation/bottom-tabs"
 
 import { useTheme } from "styled-components/native"
-import { useApp } from "@realm/react"
 
-import { useIsAdmin } from "../hooks/useIsAdmin"
+import { useAuth } from "../hooks/useAuth"
+
 
 import { House, Money, SignOut, IdentificationBadge, ListPlus, Package } from "phosphor-react-native"
 
 import { Loading } from "../components/Loading"
 import { Home } from "../screens/Home"
 import { EditOrder } from "../screens/EditOrder"
-import {  RequestAdmin } from "../screens/RequestAdmin"
 import { NewProduct } from "../screens/NewProduct"
 import { Products } from "../screens/Products"
+import { ProductDetails } from "../screens/ProductDetails"
+import { AdminRequest } from "../screens/AdminRequest"
 
 type AdminRoutes = {
   home: undefined;
@@ -25,6 +26,7 @@ type AdminRoutes = {
   singOut: undefined;
   adminRequest: undefined;
   products: undefined;
+  productDetails: { id: string };
 }
 
 export type AdminNavigationRoutesProps = BottomTabNavigationProp<AdminRoutes>
@@ -33,7 +35,7 @@ const { Navigator, Screen } = createBottomTabNavigator<AdminRoutes>();
 export function AdminRoutes(){
   const { COLORS } = useTheme();
   const iconSize = 26;
-  const { removeIsAdmin } = useIsAdmin();
+  const { user, singOut } = useAuth();
   
   return(
     <Navigator
@@ -64,7 +66,7 @@ export function AdminRoutes(){
         }}
       />
 
-      {/* <Screen 
+      <Screen 
         name="editOrder"
         component={EditOrder}
         options={{
@@ -76,15 +78,13 @@ export function AdminRoutes(){
       />
 
       <Screen 
-        name="toPay"
-        component={ToPay}
+        name="productDetails"
+        component={ProductDetails}
         options={{
-          tabBarIcon: ({ color }) => (
-            <Money 
-              color={color}
-              size={iconSize}
-            />
-          )
+          tabBarButton: () => null,
+          tabBarStyle: {
+            display: 'none'
+          }
         }}
       />
 
@@ -130,14 +130,12 @@ export function AdminRoutes(){
       <Screen 
         name="singOut"
         component={() => {
-          const app = useApp();
 
           useEffect(() => {
             function handleLogout(){
-              app.currentUser?.logOut();
+              singOut();
             }
             
-            removeIsAdmin();
             handleLogout();
           }, []);
 
@@ -152,7 +150,7 @@ export function AdminRoutes(){
             />
           )
         }}
-      /> */}
+      />
     </Navigator>
   )
 }

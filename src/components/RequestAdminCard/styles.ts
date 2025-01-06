@@ -2,7 +2,7 @@ import styled from 'styled-components/native';
 import { TouchableOpacity } from 'react-native';
 
 
-export const Container = styled(TouchableOpacity)`
+export const Container = styled.View`
   flex: 1;
   height: 150px;
   background-color: ${({ theme }) => theme.COLORS.GRAY_700};
@@ -37,4 +37,21 @@ export const RequestedAt = styled.Text`
   color: ${({ theme }) => theme.COLORS.GRAY_400};
   font-size: ${({ theme }) => theme.FONT_SIZE.SM}px;
   font-family: ${({ theme }) => theme.FONT_FAMILY.REGULAR};
+`;
+
+export const ButtonsContainer = styled.View`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: row;
+  gap: 30px;
+`;
+
+export const Button = styled(TouchableOpacity)`
+  margin-top: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px;
+  border-radius: 5px;
 `;
