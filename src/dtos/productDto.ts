@@ -4,4 +4,6 @@ export type productDto = {
   description: string;
   price: number;
   quantity: number;
+  createdAt: string;
+  updatedAt: string;
 }

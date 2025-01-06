@@ -64,6 +64,7 @@ export function New() {
 
     const filteredSelectedProduct = {
       productId: product.id,
+      productName: product.name,
       quantity: 1,
       price: product.price
     }

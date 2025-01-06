@@ -16,6 +16,7 @@ import { Home } from "../screens/Home"
 import { useEffect } from "react"
 import { Details } from "../screens/Details"
 import { RequestAdmin } from "../screens/RequestAdmin"
+import { ToPay } from "../screens/ToPay"
 
 
 type AppRoutes = {
@@ -78,7 +79,7 @@ export function AppRoutes(){
         }}
       />
 
-      {/* <Screen 
+      <Screen 
         name="toPay"
         component={ToPay}
         options={{
@@ -89,7 +90,7 @@ export function AppRoutes(){
             />
           )
         }}
-      /> */}
+      />
 
 
       <Screen 

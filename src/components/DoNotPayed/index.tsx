@@ -1,35 +1,32 @@
 import React from 'react';
 import { Container, Content, TextDetails, OrderPrice, ProductName, DetailsContainer } from './styles';
 
-import { OrderProps } from '../Order'
+import { useAuth } from '../../hooks/useAuth';
+
+import { notPaidOrderDto } from '../../dtos/notPaidOrderDto';
 
 type Props = {
-  data: OrderProps;
+  data: notPaidOrderDto;
 }
 
-export function DoNotPayed({ data: {product_name, price, created_at, user_name} }: Props) {
-  const isAdmin = true;
+export function DoNotPayed({ data: { created_at, price, } }: Props) {
+  const { user } = useAuth();
 
   return (
     <Container>
-      <Content>
-        <ProductName>
-          { product_name}
-        </ProductName>
-        <OrderPrice>
-          R$ { price },00
-        </OrderPrice>
-      </Content>
-
       <DetailsContainer>
         <TextDetails>
           { created_at }
         </TextDetails>
+
+        <OrderPrice>
+          R$ { price },00
+        </OrderPrice>
         
         {
-          isAdmin && 
+           user.isAdmin && 
           <TextDetails>
-           por { user_name }
+           por {  }
           </TextDetails>
         }
       </DetailsContainer>

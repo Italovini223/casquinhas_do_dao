@@ -18,7 +18,7 @@ export const Container = styled.TouchableOpacity<isSelectedProps>`
 `;
 
 export const ProductName = styled.Text<isSelectedProps>`
-  font-size: ${({ theme }) => theme.FONT_SIZE.MD};
+  font-size: ${({ theme }) => theme.FONT_SIZE.MD}px;
   color: ${({ theme, isSelected  }) => isSelected ? theme.COLORS.GRAY_800 : theme.COLORS.WHITE};
 `;
 
