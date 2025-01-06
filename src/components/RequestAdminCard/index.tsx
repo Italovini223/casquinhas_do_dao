@@ -42,7 +42,7 @@ export function RequestAdminCard({ data: { userId, createdAt }, deleteBtnFunctio
            {userName}
           </UserName>
           <RequestedAt>
-            {dayjs(createdAt).format('[solicitado em ]DD/MM/YYYY [as] HH:mm')}
+            {dayjs(createdAt).utc().hour(dayjs(createdAt).hour() - 3).format('[solicitado em ]DD/MM/YYYY [as] HH:mm')}
           </RequestedAt>
         </UserInfosContainer>
         <ButtonsContainer>

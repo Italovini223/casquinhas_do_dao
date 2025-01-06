@@ -70,7 +70,7 @@ export function Order({  data:{ id, userId, isPaid, total, createdAt   }}: Props
       </Content>
       <Infos>
         <DataInfo>
-          { dayjs(createdAt).format('HH:mm') }
+          { dayjs(createdAt).utc().hour(dayjs(createdAt).hour() - 3).format('HH:mm') }
         </DataInfo>
         {
           user.isAdmin &&

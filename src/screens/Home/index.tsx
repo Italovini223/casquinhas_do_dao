@@ -6,20 +6,22 @@ import { useFocusEffect } from '@react-navigation/native'
 
 import { FlatList } from 'react-native'
 
+import { orderDto } from '../../dtos/orderDto'
+
 
 import { useIsAdmin } from '../../hooks/useIsAdmin'
 import { useAuth } from '../../hooks/useAuth'
 
 
 import { HomeHeader } from '../../components/HomeHeader'
-import { Order, Order as OrderComponent, OrderProps } from '../../components/Order'
+import { Order, Order as OrderComponent } from '../../components/Order'
 import { Container, Content } from './styles'
 import { Alert } from 'react-native'
 
 
 
 export function Home() {
-  const [userOrders, setUserOrders] = useState<OrderProps[]>([])
+  const [userOrders, setUserOrders] = useState<orderDto[]>([])
   const { user } = useAuth();
 
 
@@ -32,7 +34,7 @@ export function Home() {
       const response = await api.get('/order');
 
       if(!user.isAdmin){
-        const filteredOrders = response.data.orders.filter((order: OrderProps) => order.userId === user.id);
+        const filteredOrders = response.data.orders.filter((order: orderDto) => order.userId === user.id);
         setUserOrders(filteredOrders);
       
       } else {
