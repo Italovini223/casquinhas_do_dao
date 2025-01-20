@@ -11,3 +11,4 @@ export const Content = styled.View`
   margin-top: 20px;
 `;
 
+

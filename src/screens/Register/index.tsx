@@ -1,19 +1,20 @@
 import { useState, useContext } from 'react'
+import { Alert, TouchableOpacityProps } from 'react-native'
 
 import { IceCream } from 'phosphor-react-native'
 
 import { useAuth } from '../../hooks/useAuth'
 
+import { useNavigation } from '@react-navigation/native'
+import { SingInRoutesProps } from '../../routes/singIn.routes'
 
-import { IsAdminContext } from '../../contexts/isAdmin'
 import { useTheme } from 'styled-components/native'
 
-import { Container, Content } from './styles'
+import { Container, Content, SingUpText, BtnSingUp, SingUpTextComponent, BtnTitle } from './styles'
 
 import { Button } from '../../components/Button'
 import { Input } from '../../components/Input'
 
-import { Alert } from 'react-native'
 
 
 export function Register() {
@@ -23,6 +24,11 @@ export function Register() {
 
   const { COLORS } = useTheme()
   const { singIn } = useAuth()
+  const navigation = useNavigation<SingInRoutesProps>()
+
+  function handleNavigateToSingUp(){
+    navigation.navigate('singUp');
+  }
 
 
   async function handleSingIn(){
@@ -68,6 +74,20 @@ export function Register() {
           label='Senha'
           onChangeText={setPassword}
         />
+
+        <SingUpTextComponent>
+
+          <SingUpText>
+            Não tem uma conta? 
+          </SingUpText>
+          
+          <BtnSingUp onPress={handleNavigateToSingUp}>
+            <BtnTitle>
+              Cadastre-se
+            </BtnTitle>
+          </BtnSingUp>
+
+        </SingUpTextComponent>
 
         <Button 
           title='ENTRAR'
