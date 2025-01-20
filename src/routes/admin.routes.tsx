@@ -7,7 +7,7 @@ import { useTheme } from "styled-components/native"
 import { useAuth } from "../hooks/useAuth"
 
 
-import { House, Money, SignOut, IdentificationBadge, ListPlus, Package } from "phosphor-react-native"
+import { House, Money, SignOut, IdentificationBadge, ListPlus, Package, UserList } from "phosphor-react-native"
 
 import { Loading } from "../components/Loading"
 import { Home } from "../screens/Home"
@@ -16,17 +16,23 @@ import { NewProduct } from "../screens/NewProduct"
 import { Products } from "../screens/Products"
 import { ProductDetails } from "../screens/ProductDetails"
 import { AdminRequest } from "../screens/AdminRequest"
+import { UsersList } from "../screens/UsersList"
+import { ToPay } from "../screens/ToPay"
+import { Details } from "../screens/Details"
+
 
 type AdminRoutes = {
   home: undefined;
   newProduct: undefined;
   editProduct: undefined;
   editOrder: { id: string };
-  toPay: undefined;
   singOut: undefined;
   adminRequest: undefined;
   products: undefined;
   productDetails: { id: string };
+  usersList: undefined;
+  toPay: { id: string, userName: string };
+  details: { id: string };
 }
 
 export type AdminNavigationRoutesProps = BottomTabNavigationProp<AdminRoutes>
@@ -78,8 +84,30 @@ export function AdminRoutes(){
       />
 
       <Screen 
+        name="toPay"
+        component={ToPay}
+        options={{
+          tabBarButton: () => null,
+          tabBarStyle: {
+            display: 'none'
+          }
+        }}
+      />
+
+      <Screen 
         name="productDetails"
         component={ProductDetails}
+        options={{
+          tabBarButton: () => null,
+          tabBarStyle: {
+            display: 'none'
+          }
+        }}
+      />
+
+      <Screen 
+        name="details"
+        component={Details}
         options={{
           tabBarButton: () => null,
           tabBarStyle: {
@@ -94,6 +122,19 @@ export function AdminRoutes(){
         options={{
           tabBarIcon: ({ color }) => (
             <IdentificationBadge 
+              color={color}
+              size={iconSize}
+            />
+          )
+        }}
+      />
+
+      <Screen
+        name="usersList"
+        component={UsersList}
+        options={{
+          tabBarIcon: ({ color }) => (
+            <UserList 
               color={color}
               size={iconSize}
             />

@@ -1,166 +1,110 @@
-import { useState, useCallback } from 'react'
+import { useState, useCallback } from 'react';
+import { useFocusEffect, useRoute } from '@react-navigation/native';
+import { Alert, FlatList } from 'react-native';
+import { useAuth } from '../../hooks/useAuth';
+import { orderDto } from '../../dtos/orderDto';
+import { notPaidOrderDto } from '../../dtos/notPaidOrderDto';
+import dayjs from 'dayjs';
+import { Header } from '../../components/Header';
+import { Container, Content, Empty, EmptyContent, TotalContainer } from './styles';
+import { DoNotPayed } from '../../components/DoNotPayed';
+import { TotalPrice } from '../New/styles';
+import { Loading } from '../../components/Loading';
+import { api } from '../../utils/api';
 
-import { useFocusEffect } from '@react-navigation/native'
+type AdminRouteParams = {
+  id: string;
+  userName: string;
+};
 
-import { Alert, FlatList } from 'react-native'
-
-import { useAuth } from '../../hooks/useAuth'
-
-
-import { orderDto } from '../../dtos/orderDto'
-import { notPaidOrderDto } from '../../dtos/notPaidOrderDto'
-
-import dayjs from 'dayjs'
-
-
-import { Header } from '../../components/Header'
-import { Container, Content, Empty, EmptyContent, TotalContainer } from './styles'
-import { DoNotPayed } from '../../components/DoNotPayed'
-import { TotalPrice } from '../New/styles'
-import { SearchInput } from '../../components/SearchInput'
-import { Loading } from '../../components/Loading'
-import { api } from '../../utils/api'
-
-export function ToPay(){
+export function ToPay() {
   const [notPayedOrders, setNotPayedOrders] = useState<notPaidOrderDto[]>([]);
-  const [searchInput, setSearchInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-
-  
   const { user } = useAuth();
+  const route = useRoute();
+  const { id, userName } = route.params as AdminRouteParams;
 
-  
-  async function fetchNotPayedOrders(){
+  let headerTitle = 'Não pagos';
+
+  if (user.isAdmin) {
+    headerTitle = `Não pagos de ${userName}`;
+  }
+
+  async function fetchNotPayedOrders() {
     try {
       setIsLoading(true);
       const { data } = await api.get('/order');
 
       let filteredResponse;
-      
+
       if (!user.isAdmin) {
         filteredResponse = data.orders.filter((item: orderDto) => (
           item.userId === user.id && item.isPaid === false
         ));
       } else {
         filteredResponse = data.orders.filter((item: orderDto) => (
-          item.isPaid === false
+          console.log(item),
+          console.log(id),
+          item.isPaid === false && item.userId === id
         ));
       }
-      
-      
 
-      const formattedOrder = filteredResponse.map((item: orderDto) => {
-        return({
-          id: item.id,
-          its_paid: item.isPaid,
-          created_at: dayjs(item.createdAt).format('[em] DD/MM/YYYY [as] HH:mm'),
-          price: item.total,
-        })
-      })
+      const formattedOrder = filteredResponse.map((item: orderDto) => ({
+        id: item.id,
+        its_paid: item.isPaid,
+        created_at: dayjs(item.createdAt).format('[em] DD/MM/YYYY [às] HH:mm'),
+        price: item.total,
+      }));
 
       setNotPayedOrders(formattedOrder);
-
-    } catch(error){
-      Alert.alert('PEDIDOS', 'Erro ao carregas os pedidos');
+    } catch (error) {
+      Alert.alert('PEDIDOS', 'Erro ao carregar os pedidos');
       console.log(error);
     } finally {
       setIsLoading(false);
     }
   }
 
-  // function handleSearchByName(){
-  //   try {
-  //     setIsLoading(true);
-
-  //     if(searchInput.length == 0){
-  //       return Alert.alert("BUSCA", "Digite um nome para ser pesquisado");
-  //     }
-  
-  //     const response = orders.filtered(`user_name = '${searchInput}'`);
-  
-  //     const formattedOrders = response.map(item => {
-  //       return({
-  //         id: item.id,
-  //         its_paid: item.isPaid,
-  //         created_at: dayjs(item.createdAt).format('[em] DD/MM/YYYY [as] HH:mm'),
-  //         price: item.total,
-  //         products: item.products,
-  //       })
-  //     });
-  
-  //     setNotPayedOrders(formattedOrders);
-
-  //   } catch (error){
-  //     console.log(error);
-  //   } finally {
-  //     setIsLoading(false);
-  //   }
-  // }
-
-  function calculateTotal(){
+  function calculateTotal() {
     let total = 0;
-    notPayedOrders.forEach(item => (
-      total += item.price
-    ));
-
+    notPayedOrders.forEach(item => {
+      total += item.price;
+    });
     return total;
   }
 
   useFocusEffect(useCallback(() => {
-
     fetchNotPayedOrders();
+  }, [id]));
 
-  }, []));
-
-
-  if(isLoading){
-    return (
-      <Loading />
-    )
+  if (isLoading) {
+    return <Loading />;
   }
 
   return (
     <Container>
-      <Header title='Não pagos'/>
+      <Header title={headerTitle} />
       <Content>
-        {/* <SearchInput 
-          onPress={() => {}} 
-          placeholder='Busque pelo nome' 
-          onChangeText={setSearchInput}
-        /> */}
-
-        {
-          isLoading ? <Loading /> :
+        {isLoading ? (
+          <Loading />
+        ) : (
           <>
-            <FlatList 
+            <FlatList
               data={notPayedOrders}
               ListEmptyComponent={() => (
                 <EmptyContent>
-                  <Empty>
-                    Ainda nao ha pedidos
-                  </Empty>
+                  <Empty>Ainda não há pedidos</Empty>
                 </EmptyContent>
               )}
-              renderItem={({ item }) => (
-                <DoNotPayed 
-                  data={item}
-                />
-              )}
+              renderItem={({ item }) => <DoNotPayed data={item} />}
             />
-
             <TotalContainer>
-              <TotalPrice>
-                Total 
-              </TotalPrice>
-              <TotalPrice>
-                R$ { String(calculateTotal()) }, 00
-              </TotalPrice>
+              <TotalPrice>Total</TotalPrice>
+              <TotalPrice>R$ {String(calculateTotal())},00</TotalPrice>
             </TotalContainer>
           </>
-        }
-
+        )}
       </Content>
-
     </Container>
   );
 }

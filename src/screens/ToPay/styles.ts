@@ -10,7 +10,7 @@ export const Content = styled.View`
   flex: 1;
   padding: 0 30px;
 
-  margin-top: 20px;
+  margin: 40px 0px;
 `;
 
 export const TotalContainer = styled.View`

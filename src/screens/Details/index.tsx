@@ -7,7 +7,6 @@ import { api } from '../../utils/api';
 import { useRoute } from '@react-navigation/native'
 
 import { orderDto } from '../../dtos/orderDto';
-import { detailProductDto } from '../../dtos/detailProductDto';
 
 import { Container, Content, Status, Label, Price, Product, Quantity } from './styles'
 

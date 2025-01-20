@@ -9,7 +9,7 @@ type orderStatusColorProps = {
 
 export const Container = styled(TouchableOpacity)`
   width: 100%;
-  height: 100px;
+  min-height: 100px;
   border-radius: 6px;
 
   align-items: center;
@@ -36,7 +36,7 @@ export const OrderTitle = styled.Text`
   flex: 1;
   text-align: center;
   color: ${({ theme }) => theme.COLORS.GRAY_200};
-  font-size: ${({ theme }) => theme.FONT_SIZE.XXL}px;
+  font-size: ${({ theme }) => theme.FONT_SIZE.LG}px;
   font-family: ${({ theme }) => theme.FONT_FAMILY.BOLD};
 `;
 
