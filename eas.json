@@ -1,0 +1,17 @@
+{
+  "cli": {
+    "version": ">= 14.4.1",
+    "appVersionSource": "remote"
+  },
+  "build": {
+    "preview": {
+      "android": {
+        "distribution": "internal"
+      },
+      "env": {
+        "API_URL": "https://casquinha-do-dao-api.onrender.com",
+        "REALM_APP_ID": "65c5824245f1f02c24ce77a2#"
+      }
+    }
+  }
+}

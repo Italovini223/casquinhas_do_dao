@@ -9,12 +9,13 @@ import { FlatList } from 'react-native'
 import { orderDto } from '../../dtos/orderDto'
 
 
-import { useIsAdmin } from '../../hooks/useIsAdmin'
 import { useAuth } from '../../hooks/useAuth'
 
 
 import { HomeHeader } from '../../components/HomeHeader'
 import { Order, Order as OrderComponent } from '../../components/Order'
+import { Loading } from '../../components/Loading'
+
 import { Container, Content } from './styles'
 import { Alert } from 'react-native'
 
@@ -22,6 +23,7 @@ import { Alert } from 'react-native'
 
 export function Home() {
   const [userOrders, setUserOrders] = useState<orderDto[]>([])
+  const [isLoading, setIsLoading] = useState(true)
   const { user } = useAuth();
 
 
@@ -31,6 +33,7 @@ export function Home() {
 
   async function fetchOrder(){
     try {
+      setIsLoading(true);
       const response = await api.get('/order');
 
       if(!user.isAdmin){
@@ -43,6 +46,8 @@ export function Home() {
     } catch(error){
       Alert.alert('ERRO', 'Erro ao carregar os pedidos');
       console.log(error);
+    } finally {
+      setIsLoading(false);
     }
   }
 
@@ -52,6 +57,11 @@ export function Home() {
     fetchOrder();
   }, []));
 
+  if(isLoading){
+    return (
+      <Loading />
+    ) 
+  } 
 
   return (
     <Container>
