@@ -22,11 +22,12 @@ export function ToPay() {
   const [isLoading, setIsLoading] = useState(false);
   const { user } = useAuth();
   const route = useRoute();
-  const { id, userName } = route.params as AdminRouteParams;
+
+  const { id, userName } = route.params as AdminRouteParams || {};
 
   let headerTitle = 'Não pagos';
 
-  if (user.isAdmin) {
+  if (user.isAdmin && userName) {
     headerTitle = `Não pagos de ${userName}`;
   }
 
@@ -41,11 +42,10 @@ export function ToPay() {
         filteredResponse = data.orders.filter((item: orderDto) => (
           item.userId === user.id && item.isPaid === false
         ));
-      } else {
+      } else if (id) {
         filteredResponse = data.orders.filter((item: orderDto) => (
-          console.log(item),
-          console.log(id),
           item.isPaid === false && item.userId === id
+          
         ));
       }
 
